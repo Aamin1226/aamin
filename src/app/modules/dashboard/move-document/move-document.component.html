@@ -1,0 +1,41 @@
+<div class="modal-container move-modal flex justify-center items-center fixed top-0 right-0 bottom-0 left-0">
+  <div class="modal bg-white px-16 pb-14 pt-9 rounded-md flex flex-col items-center w-[550px]">
+
+    <div class="flex mr-auto">
+      <div class="text-2xl font-semibold text-[#192339]">
+        Move Document
+      </div>
+    </div>
+
+
+    <div class="w-full">
+      <div class="flex flex-col mt-8 mr-auto w-full mb-3 relative">
+        <label class="text-sm font-normal mb-1 text-[#03014]" for="team">Select a team:</label>
+
+        <select [(ngModel)]="yourTeamId" class="focus:outline-none select-team" name="teams" id="team">
+          <option *ngFor="let data of myTeams" [selected]="data.id == yourTeamId" [ngValue]="data.id">{{data.team_name}}
+          </option>
+        </select>
+        <!-- <label class="text-sm font-normal mb-1 mt-6 ml-2" for="size"
+    >Additional message (optional)</label
+    > -->
+        <!-- <textarea class="border border-[#D9D9D9] rounded-md h-24" type="text" name="" id=""></textarea> -->
+      </div>
+      <!-- <span class="text-danger" *ngIf="emailInvitationForm.controls['emails'].hasError('required') && (emailInvitationForm.controls['emails'].dirty || emailInvitationForm.controls['emails'].touched)">This field is required</span>
+  <span class="text-danger" *ngIf="emailInvitationForm.controls['emails'].hasError('pattern') && (emailInvitationForm.controls['emails'].dirty || emailInvitationForm.controls['emails'].touched)">Please enter valid email address</span> -->
+
+      <!-- <div class="w-full h-10 text-sm font-medium text-[#428EA1] py-2 bg-[#F0FCFF] rounded text-center mt-6" *ngIf="invitationSuccess">This Invite has been sent successfully.</div> -->
+      <!-- <div class="text-red-400 font-light text-sm h-0 ">*Please insert valid email id </div> -->
+      <div class="flex space-x-3 mt-10 w-full mt-auto">
+        <button class="px-8 py-2 bg-white rounded-md inline-flex items-center justify-center ml-auto border"
+          (click)="closeModal()">
+          <span class="text-[#727272] font-base text-sm">Cancel</span>
+        </button>
+        <button class="px-8 py-2 bg-[#586AF6] rounded-md inline-flex items-center justify-center ml-auto">
+          <span class="text-white font-base text-sm" (click)="moveToTeam()">Move</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

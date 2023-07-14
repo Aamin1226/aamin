@@ -1,0 +1,255 @@
+<app-create-team *ngIf="createTeamDialogue"></app-create-team>
+<app-workspace-settings *ngIf="teamSettingDialogue"></app-workspace-settings>
+<app-invite-member [teamId]="myDefaultTeam?.id" *ngIf="inviteTeammateDialogue"></app-invite-member>
+<aside [ngClass]=" {'transition-sidebar' : !sidebarItem }"
+       class="w-28 fixed flex  flex-col transition transform ease-out duration-1000 z-40 h-screen bg-white mt-24 border-r border-[#E8EEFA]">
+  <!-- MINI SIDEBAR-->
+  <div
+    class="w-5 h-11 bg-[#F0F1FF] absolute toggle-sidebar-btn -right-5 flex justify-center items-center cursor-pointer"
+    (click)="openNav()">
+    <div>
+      <img src="assets/dashboardicons/close-arrow.svg" alt="arrow" *ngIf="!sidebarItem">
+      <img src="assets/dashboardicons/open-arrow.svg" alt="arrow" *ngIf="sidebarItem">
+    </div>
+  </div>
+  <perfect-scrollbar>
+    <div class="mini mt-7 flex flex-col space-y-4 w-full">
+      <div appClickOutside [appClickOutside]="targetId" (clickOutside)="closeMenu()"
+           class="justify-start text-white w-fit m-auto transform ease-in-out duration-300 flex p-0 justify-center cursor-pointer z-10 relative">
+        <ul [class.active]="teamMenu" id="teamDropdown" #teamDropdown
+            class="team-dropdown absolute bg-white py-5 px-4 rounded-[10px] opacity-100 z-10  top-[110%] w-44 overflow-hidden border"
+            *ngIf="teamMenu && sidebarItem">
+          <li *ngFor="let team of myTeams" class="cursor-pointer " (click)="setDefault(team.id)">
+            <div
+              class="hover:bg-[#F0F1FF] px-2 py-3 rounded-lg font-medium text-sm whitespace-break-spaces flex cursor-pointer text-[#192339] capitalize">
+              <img class="mr-2 " src="assets/dashboardicons/team-icon (2).svg" alt="team"/>{{
+              team.team_name
+              }}
+            </div>
+          </li>
+          <li (click)="createTeam()" class="cursor-pointer mt-2">
+            <div
+              class="bg-[#F0F1FF] px-2 py-3 rounded-lg font-medium text-sm whitespace-nowrap text-[#5B61F3] flex cursor-pointer">
+              Create New Team
+            </div>
+          </li>
+        </ul>
+        <div class="font-semibold text-base w-10 h-10 rounded-lg bg-[#F0F1FF] flex justify-center items-center mr-3"
+             *ngIf="!sidebarItem">
+          <span class="text-[#5B61F3] uppercase"> {{ myDefaultTeam == undefined ? name[0] : myDefaultTeam?.team_name[0]
+            }}</span>
+        </div>
+        <div class="bg-[#F0F1FF] flex justify-center items-center px-5 rounded-lg min-h-[2rem] cursor-pointer"
+             *ngIf="sidebarItem" (click)="teamMenu = !teamMenu" appClickOutsideExclude>
+          <div
+            class="text-[#5B61F3] text-base font-medium flex justify-center items-center capitalize  max-w-[100px] break-words min-w-[100px]">
+            {{ myDefaultTeam == undefined ? name : myDefaultTeam?.team_name }}
+          </div>
+          <div class="text-white ml-2 text-base- font-medium flex justify-center items-center">
+            <img src="assets/dashboardicons/down_arrow.svg" alt=""/>
+
+          </div>
+        </div>
+      </div>
+      <div
+        class="group relative justify-start pl-10 text-white w-full p-3 transform ease-in-out duration-300 flex  cursor-pointer items-center"
+        routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+
+        <img class="block" src="assets/dashboardicons/active-icon/new-dash-inactive.png" alt="home"
+             routerLinkActive="hidden" [routerLinkActiveOptions]="{ exact: true }"/>
+        <img class="hidden" src="assets/dashboardicons/new-dash.png" alt="home" routerLinkActive="!block"
+             [routerLinkActiveOptions]="{ exact: true }"/>
+        <!-- <span class="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2
+      -translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto top-[-23px] ml-20 w-max"  *ngIf="!sidebarItem">My Dashboard</span> -->
+        <div class="text-[#9196A2] ml-4 text-base font-medium flex justify-center items-center h-4"
+             routerLinkActive="text-black" *ngIf="sidebarItem" [routerLinkActiveOptions]="{ exact: true }">
+          My Dashboard
+        </div>
+        <div class="w-[6px] bg-[#5B61F3] absolute right-0 active-class hidden h-9"></div>
+      </div>
+      <div routerLink="/dashboard/documents" routerLinkActive="active"
+           class="group justify-start pl-10 text-white w-full p-3 rounded-full transform ease-in-out duration-300 flex cursor-pointer items-center relative">
+        <img class="block" src="assets/dashboardicons/doc.svg" alt="doc" routerLinkActive="hidden"/>
+        <img class="hidden" src="assets/dashboardicons/active-icon/doc.svg" alt="doc"
+             routerLinkActive="!block"/>
+        <!-- <span class="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2
+      -translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto top-[-23px] ml-20"  *ngIf="!sidebarItem">Documents</span> -->
+        <div class="text-[#9196A2] ml-4 text-base font-medium flex justify-center items-center h-4" *ngIf="sidebarItem"
+             routerLinkActive="text-black">
+          Documents
+        </div>
+        <img class="ml-5  w-3 h-3" src="assets/dashboardicons/down-active.svg" alt="arr"
+             *ngIf="sidebarItem && route.url == '/dashboard/documents' && documentsMenu"
+             (click)="documentsMenu = !documentsMenu"/>
+        <div class="text-[#9196A2] ml-5 text-base font-base"
+             *ngIf="sidebarItem && route.url == '/dashboard/documents' && !documentsMenu"
+             (click)="documentsMenu = !documentsMenu">>
+        </div>
+        <div class="w-[6px] bg-[#5B61F3] h-9 absolute right-0 active-class hidden"></div>
+      </div>
+
+      <div class="pl-10 pr-5 !mt-1" *ngIf="route.url == '/dashboard/documents' && sidebarItem && documentsMenu">
+        <div class="flex flex-col space-y-4 w-full border-l-[#F0F1FF] border-l-2  ">
+          <div>
+            <div class="justify-start text-white w-full flex cursor-pointer items-center">
+              <div class="w-1 h-1 rounded-full bg-[#9196A2] -ml-[3px]"></div>
+              <div class=" ml-4 text-sm font-base flex justify-center items-center h-4"
+                   [ngClass]="myDocumentsMenu?'text-[#192339]':'text-[#9196A2]'">
+                My Documents
+              </div>
+              <img class="ml-auto" src="assets/dashboardicons/down-active.svg" alt="arr"
+                   *ngIf="myDocumentsMenu" (click)="myDocumentsMenu = !myDocumentsMenu"/>
+              <div class="text-[#9196A2] ml-auto text-base font-base" *ngIf="!myDocumentsMenu"
+                   (click)="myDocumentsMenu = !myDocumentsMenu">>
+              </div>
+
+            </div>
+            <div class="pl-5 pt-2" *ngIf="myDocumentsMenu">
+              <div class="flex flex-col space-y-4 w-full border-l-[#F0F1FF] border-l-2  "
+                   *ngIf="route.url == '/dashboard/documents' && sidebarItem">
+
+                <div class="justify-start text-white w-full flex cursor-pointer items-center"
+                     *ngFor="let folder of myDocumentsFolders; let  i = index">
+                  <div class="w-1 h-1 rounded-full -ml-[3px]"
+                       [ngClass]="myDocumentsIndex==i?'bg-[#5B51EF]':'bg-[#9196A2]'"></div>
+                  <div (click)="changeDocumentStep(folder);myDocumentsIndex = i;
+      shareDocumentsIndex = -1;
+      privateIndex = -1;" class="ml-4 text-xs font-base flex justify-center items-center h-4"
+                       [ngClass]="myDocumentsIndex==i?'text-[#5B51EF]':'text-[#9196A2]'">
+                    {{folder}}
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="justify-start text-white w-full flex cursor-pointer items-center">
+              <div class="w-1 h-1 rounded-full bg-[#9196A2] -ml-[3px]"></div>
+              <div (click)="changeDocumentStep('Shared with Team')"
+                   class="ml-4 text-sm font-base flex justify-center items-center h-4"
+                   [ngClass]="activeMenu == 'Shared with Team'?'text-[#192339]':'text-[#9196A2]'">
+                Shared with Team
+              </div>
+              <div class="flex ml-auto">
+                <img class="mr-2" src="assets/dashboardicons/new-folder.svg" alt="create"
+                     *ngIf="shareDocumentsMenu&& false">
+                <img src="assets/dashboardicons/down-active.svg" alt="arr" *ngIf="shareDocumentsMenu&& false"
+                     (click)="shareDocumentsMenu = !shareDocumentsMenu"/>
+                <div class="text-[#9196A2] text-base font-base" *ngIf="!shareDocumentsMenu&& false"
+                     (click)="shareDocumentsMenu = !shareDocumentsMenu">>
+                </div>
+              </div>
+
+            </div>
+            <div class="pl-5 pt-2" *ngIf="shareDocumentsMenu">
+              <div class="flex flex-col space-y-4 w-full border-l-[#F0F1FF] border-l-2  "
+                   *ngIf="route.url == '/dashboard/documents' && sidebarItem">
+                <div class="justify-start text-white w-full flex cursor-pointer items-center"
+                     *ngFor="let folder of shareDocumentsFolders;let i = index">
+                  <div class="w-1 h-1 rounded-full -ml-[3px]"
+                       [ngClass]="shareDocumentsIndex==i?'bg-[#5B51EF]':'bg-[#9196A2]'"></div>
+                  <div class=" ml-4 text-xs font-base flex justify-center items-center h-4"
+                       [ngClass]="shareDocumentsIndex==i?'text-[#5B51EF]':'text-[#9196A2]'" (click)="shareDocumentsIndex = i;myDocumentsIndex = -1;
+        privateIndex = -1;">
+                    {{folder}}
+                  </div>
+
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="justify-start text-white w-full flex cursor-pointer items-center">
+              <div class="w-1 h-1 rounded-full bg-[#9196A2] -ml-[3px]"></div>
+              <div (click)="changeDocumentStep('Private');"
+                   class=" ml-4 text-sm font-base flex justify-center items-center h-4"
+                   [ngClass]="activeMenu == 'Private'?'text-[#192339]':'text-[#9196A2]'">
+                Private
+              </div>
+
+              <div class="flex ml-auto">
+                <img class="mr-2" src="assets/dashboardicons/new-folder.svg" alt="create"
+                     *ngIf="privateDocumentsMenu && false">
+                <img src="assets/dashboardicons/down-active.svg" alt="arr" *ngIf="privateDocumentsMenu"
+                     (click)="privateDocumentsMenu = !privateDocumentsMenu"/>
+                <div class="text-[#9196A2] text-base font-base" *ngIf="!privateDocumentsMenu && false"
+                     (click)="privateDocumentsMenu = !privateDocumentsMenu">>
+                </div>
+              </div>
+
+            </div>
+            <div class="pl-5 pt-2" *ngIf="privateDocumentsMenu && false">
+              <div class="flex flex-col space-y-4 w-full border-l-[#F0F1FF] border-l-2  "
+                   *ngIf="route.url == '/dashboard/documents' && sidebarItem">
+
+                <div class="justify-start text-white w-full flex cursor-pointer items-center"
+                     *ngFor="let folder of privateDocumentsFolders;let i = index">
+                  <div class="w-1 h-1 rounded-full -ml-[3px]" [ngClass]="privateIndex==i?'bg-[#5B51EF]':'bg-[#9196A2]'">
+                  </div>
+                  <div class="ml-4 text-xs font-base flex justify-center items-center h-4"
+                       [ngClass]="privateIndex==i?'text-[#5B51EF]':'text-[#9196A2]'" (click)="privateIndex = i;myDocumentsIndex = -1;
+        shareDocumentsIndex = -1;">
+                    {{folder}}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+
+          <div class="justify-start text-white w-full flex cursor-pointer items-center">
+            <div class="w-1 h-1 rounded-full bg-[#9196A2] -ml-[3px]"></div>
+            <div (click)="changeDocumentStep('Trash');privateIndex = -1;myDocumentsIndex = -1;
+          shareDocumentsIndex = -1;"
+                 class="text-[#9196A2] ml-4 text-sm font-base flex justify-center items-center h-4">
+              Trash
+            </div>
+            <!-- <div class="text-[#9196A2] ml-auto text-sm font-base">></div> -->
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="justify-start pl-10 text-white w-full p-3 rounded-full transform ease-in-out duration-300 flex cursor-pointer items-center relative"
+        routerLink="/dashboard/teammates" routerLinkActive="active">
+        <img class="block" src="assets/dashboardicons/group.svg" alt="team" routerLinkActive="hidden"/>
+        <img class="hidden" src="assets/dashboardicons/active-icon/group.svg" alt="team"
+             routerLinkActive="!block"/>
+
+        <div class="text-[#9196A2] ml-4 text-base font-medium flex justify-center items-center h-4" *ngIf="sidebarItem"
+             routerLinkActive="text-black">
+          Teammates
+        </div>
+        <div class="w-[6px] bg-[#5B61F3] h-9 absolute right-0 active-class hidden"></div>
+      </div>
+      <div (click)="inviteTeammateDialogue = !inviteTeammateDialogue"
+           class="justify-start pl-10 text-white w-full p-3 rounded-full transform ease-in-out duration-300 flex cursor-pointer items-center">
+        <img src="assets/dashboardicons/adduser.svg" alt="adduser"/>
+        <div class="text-[#9196A2] ml-4 text-base font-medium flex justify-center items-center h-4" *ngIf="sidebarItem">
+          Invite Teammates
+        </div>
+      </div>
+      <div (click)="opneTeamSetting()"
+           class="justify-start pl-10 text-white w-full p-3 rounded-full transform ease-in-out duration-300 flex cursor-pointer items-center">
+        <img src="assets/dashboardicons/setting_new.svg" alt="Settings"/>
+        <div class="text-[#9196A2] ml-4 text-base font-medium flex justify-center items-center h-4" *ngIf="sidebarItem">
+          Settings
+        </div>
+      </div>
+
+
+    </div>
+  </perfect-scrollbar>
+  <div (click)="logout()"
+       class="justify-start pl-10 text-white w-full p-3 rounded-full transform ease-in-out duration-300 flex cursor-pointer items-center !mt-auto !mb-32">
+    <img src="assets/dashboardicons/logout.svg" alt="logout"/>
+    <div class="text-[#192339] ml-4 text-base font-medium flex justify-center items-center h-4" *ngIf="sidebarItem">
+      Log Out
+    </div>
+  </div>
+</aside>

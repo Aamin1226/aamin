@@ -1,0 +1,14 @@
+{
+  "name": "kopist-electron",
+  "description": "Kopist Desktop App",
+  "author": {
+    "name": "Zehntech",
+    "email": "vaibhav.zehntech@gmail.com"
+  },
+  "version": "12.0.1",
+  "main": "main.js",
+  "private": true,
+  "dependencies": {
+    "uiohook-napi": "^1.5.1"
+  }
+}

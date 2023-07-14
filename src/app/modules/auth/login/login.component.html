@@ -1,0 +1,111 @@
+<div class="h-screen flex">
+  <div class="w-full lg:w-1/2 bg-white flex items-center justify-center p-8">
+    <img class=" absolute top-12 tall:top-4 left-12 object-cover w-[119px] h-[30px]"
+         src="assets/kopist-logo.svg" alt="logo"/>
+    <div class="w-full lg:w-8/12 m-auto tall:mt-12">
+      <h1 class="tall:text-3xl text-5xl font-semibold pb-6">Sign in</h1>
+      <p class="opacity-50 text-base font-normal">
+        enter to continue and explore within your grasp.
+      </p>
+
+      <div class="mt-16 tall:mt-8"></div>
+      <form action="" [formGroup]="loginForm" class="my-10">
+        <div class="flex flex-col space-y-10 tall:space-y-5">
+          <label for="email" class="relative">
+            <p class="opacity-50 text-sm font-normal">Email Address</p>
+            <input id="email" name="email" type="email" formControlName="email"
+                   class="w-full py-3 border-b border-[#192339]-200 focus:outline-none placeholder:opacity-50 placeholder:text-xl placeholder:font-semibold placeholder:text-[#192339]"
+                   placeholder="Youraddres@email.com" [ngClass]="loginForm.controls['email'].invalid &&
+                (loginForm.controls['email'].dirty ||
+                  loginForm.controls['email'].touched) ? 'placeholder:text-[#BE4B49]':'placeholder:text-[#192339]'"
+            />
+            <div
+              class="error-text items-center flex absolute left-0 bottom-[-24px] w-full bg-[#FFEEEE] text-[#BE4B49] text-xs py-1 pl-4 border-t border-[#BE4B49]"
+              *ngIf="passwordControlAvailable &&
+            ( loginForm.controls['email'].invalid &&
+              (loginForm.controls['email'].dirty ||
+                loginForm.controls['email'].touched))
+            ">
+              <img src="assets/authicons/error-icon.svg" alt="e">
+              <span class="text-[#BE4B49] text-xs ml-2">Please provide a properly formatted email address
+              </span>
+            </div>
+
+
+          </label>
+          <label class="relative" for="password">
+            <p class="opacity-50 text-sm font-normal">Password</p>
+            <div class="relative">
+              <input id="password" formControlName="password" name="password" [type]="password"
+                     class="w-full py-3 border-b border-[#192339]-200 focus:outline-none placeholder:opacity-50 placeholder:text-xl placeholder:font-semibold placeholder:text-[#192339]"
+                     placeholder="Enter your password"/>
+              <!-- <span
+                  *ngIf="
+                    loginForm.controls['password'].invalid &&
+                    (loginForm.controls['password'].dirty ||
+                      loginForm.controls['password'].touched)
+                  "
+                  class="error-text"
+                  >Please enter your password!
+                </span> -->
+              <div
+                class="error-text items-center flex  left-0 bottom-[-24px] w-full bg-[#FFEEEE] text-[#BE4B49] text-xs py-1 pl-4 border-t border-[#BE4B49]"
+                *ngIf="passwordControlAvailable && loginForm.get('password')!.hasError('passwordStrength')">
+                <img src="assets/authicons/error-icon.svg" alt="e">
+                <span class="text-[#BE4B49] text-xs ml-2">Password must contain at least two of the following: numbers,
+                  lowercase letters, uppercase letters, or special characters.
+                </span>
+              </div>
+
+              <div (click)="handleShowPassword()" class="cursor-pointer">
+                <img *ngIf="!showPassword" class="absolute right-0 top-2"
+                     src="assets/authicons/eye-hide.svg" alt="eye"/>
+                <img *ngIf="showPassword" class="absolute right-0 top-2" src="assets/authicons/eye-show.svg"
+                     alt="eye"/>
+              </div>
+            </div>
+          </label>
+
+          <button (click)="onSubmit()"
+                  class="w-full font-semibold text-lg bg-[#5B61F3] rounded-lg inline-flex space-x-2 items-center justify-center py-5">
+            <span class="text-white">Sign in to Continue</span>
+          </button>
+
+          <button (click)="loginWithGoogleOidc()"
+                  class="w-full py-5 border font-normal text-lg  bg-white rounded-lg  inline-flex space-x-2 items-center justify-center">
+            <img src="assets/authimages/google_logo.png" alt="google">
+            <span class="text-black">Sign in with Google </span>
+          </button>
+
+          <div class="flex flex-row justify-between">
+            <div>
+              <p class="text-center text-sm text-[#192339] font-normal">
+                Don’t have an account ?
+                <a routerLink="/sign-up" class="font-semibold inline-flex space-x-1 items-center"><span
+                  class="text-[#FB707F] text-sm">Sign up</span></a>
+              </p>
+            </div>
+            <div>
+              <a (click)="forgotPassword()" class="font-normal cursor-pointer text-sm text-[#808080]">Forgot
+                Password?</a>
+            </div>
+          </div>
+
+          <div *ngIf="resendEmail">
+            <p class="text-center text-sm text-[#192339] font-normal">
+              You email is not verified. Please click on "Resend" to get new
+              verification link
+              <a (click)="resendVerifyLink()"
+                 class="font-semibold inline-flex space-x-1 items-center cursor-pointer"><span
+                class="text-indigo-600 text-sm cursor-pointer">Resend</span></a>
+            </p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="hidden lg:flex w-full lg:w-1/2 justify-around items-center overflow-hidden">
+    <img class=" max-h-full min-h-full object-fill fixed lg:w-1/2" src="assets/authimages/sign-in.png"
+         alt="" srcset=""/>
+  </div>
+</div>

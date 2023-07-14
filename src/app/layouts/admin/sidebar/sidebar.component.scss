@@ -1,0 +1,21 @@
+hr.solid {
+  border-top: 3px solid #bbb;
+}
+
+//   * {
+//      color: #192339;
+// }
+.active .active-class {
+  display: block !important;
+  border-radius: 8px 0px 0px 8px;
+}
+
+.toggle-sidebar-btn {
+  top: calc(50% - 96px);
+  border-radius: 0 5px 5px 0px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.06)
+}
+
+.transition-sidebar {
+  transition: width 0.25s ease-in;
+}

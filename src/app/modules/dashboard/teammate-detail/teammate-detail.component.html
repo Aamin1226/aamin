@@ -1,0 +1,301 @@
+<app-move-document [docId]="selectedDocId" *ngIf="moveTeamDialogue"></app-move-document>
+<app-share [usersList]="selectedDocUsers" [documentId]="selectedDocId" [documentSlug]="selectedDocSlug" *ngIf="shareDialogue"></app-share>
+
+<div class="content ml-[75px]  transform ease-in-out duration-500 px-2 md:px-12 lg:px-2 pt-24 pb-4 ">
+  <div class="flex py-3 justify-between items-center">
+    <div class="flex items-center">
+      <img src="assets/team/team-icon.svg" alt="team">
+      <div class="text-lg font-medium text-[#192339] ml-2">{{teamDetail?.first_name + " " +
+      teamDetail?.last_name}}</div>
+    </div>
+
+    <div class="flex">
+      <button (click)="docListView = !docListView"
+              class="flex justify-center bg-white items-center  p-3  rounded-lg">
+        <img src="assets/dashboardicons/list-view.svg" alt="" *ngIf="!docListView">
+        <img src="assets/dashboardicons/grid-view.svg" alt="" *ngIf="docListView">
+      </button>
+      <button appClickOutside [appClickOutside]="'sortingMenu'" (clickOutside)="closeSortMenu()"
+              (click)="sortingMenu = !sortingMenu"
+              class="flex justify-center bg-white items-center py-3 px-2 rounded-lg w-10 h-10 relative ml-3">
+        <img src="assets/document/sort.svg" alt="sort">
+        <ul [class.active]="cardMenu" id="sortingMenu" #sortingMenu *ngIf="sortingMenu"
+            class="absolute  py-3 px-2 bg-[white] rounded-[10px] opacity-100 z-10 right-0 top-11 options-menu w-max">
+          <li class="flex py-3 px-2 hover:bg-[#F0F1FF] rounded-lg" (click)="sortItems('alphabetical')"
+              [ngClass]="sortingOption == 'alphabetical' ? 'bg-[#F0F1FF]':''">
+            <div class="font-medium text-sm whitespace-nowrap text-[#192339]">
+              Alphabetical
+            </div>
+          </li>
+          <li class="flex py-3 px-2 hover:bg-[#F0F1FF] rounded-lg" (click)="sortItems('create')"
+              [ngClass]="sortingOption == 'create' ? 'bg-[#F0F1FF]':''">
+            <div class="font-medium text-sm whitespace-nowrap text-[#192339]">
+              Recently Created
+            </div>
+          </li>
+          <li class="flex py-3 px-2 hover:bg-[#F0F1FF] rounded-lg" (click)="sortItems('update')"
+              [ngClass]="sortingOption == 'update' ? 'bg-[#F0F1FF]':''">
+            <div class="font-medium text-sm whitespace-nowrap text-[#192339]">
+              Recently Updated
+            </div>
+          </li>
+          <li class="flex py-3 px-2 hover:bg-[#F0F1FF] rounded-lg" (click)="sortItems('view')"
+              [ngClass]="sortingOption == 'view' ? 'bg-[#F0F1FF]':''">
+            <div class="font-medium text-sm whitespace-nowrap text-[#192339]">
+              View Count
+            </div>
+          </li>
+
+        </ul>
+      </button>
+    </div>
+  </div>
+  <div class="flex -mx-2 ">
+    <div class="w-full pl-2 pr-2 pt-6 pb-6">
+      <div class="flex w-full rounded-lg px-7 py-7 teammate-stats items-center justify-between">
+        <div class="flex items-center">
+          <div *ngIf="!teamDetail?.image"
+               class="uppercase mr-auto text-center w-[60px] h-[60px] px-4 py-[14px]  rounded-full text-[25px] flex justify-center items-center font-bold bg-[#F0FCFF] text-[#428EA1]">
+            {{teamDetail?.first_name[0] + teamDetail?.last_name[0]}}
+          </div>
+          <div *ngIf="teamDetail?.image"
+               class="uppercase mr-auto text-center w-[60px] h-[60px] px-4 py-[14px]  rounded-full overflow-hidden text-[25px] flex justify-center items-center font-bold bg-[#F0FCFF] text-[#428EA1]">
+            <img class="min-w-[60px] max-w-[60px] max-h-[60px] min-h-[60px] transition duration-500"
+                 src="{{teamDetail?.image}}" alt="">
+          </div>
+          <div class="flex flex-col ml-3">
+            <div class="flex items-center">
+              <div class="text-[#192339] font-medium text-xl capitalize">{{teamDetail?.first_name + ' ' +
+              teamDetail?.last_name}}</div>
+              <div
+                class="ml-1 w-fit px-2 py-1 bg-[#EFEEFF] rounded-[28px] text-[10px] font-medium text-[#5B51EF]">
+                Creator
+              </div>
+            </div>
+            <div class="mt-1 text-[#192339b3] text-xs font-normal">{{teamDetail?.email}}</div>
+          </div>
+        </div>
+
+        <div class="flex flex-col ml-3">
+          <div class="text-[#192339] font-medium text-base">Overall Stats</div>
+          <div class="flex mt-3">
+            <div class="flex space-x-2">
+              <img src="assets/team/view.svg" alt="view">
+              <div class="text-[#9196A2] text-sm font-medium">Total Views</div>
+              <div class="text-[#192339] text-sm font-base">{{statsData?.totalDocumentViews}}</div>
+            </div>
+            <div class="flex ml-8 space-x-2">
+              <img src="assets/team/reaction.svg" alt="reaction">
+              <div class="text-[#9196A2] text-sm font-medium">Total Reactions</div>
+              <div class="text-[#192339] text-sm font-base">{{statsData?.totalReactions}}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col ml-3">
+          <div class="text-[#192339] font-medium text-base">Team Contributions</div>
+          <div class="flex mt-3">
+            <div class="flex space-x-2">
+              <img src="assets/team/kopist-i.svg" alt="kopist">
+              <div class="text-[#9196A2] text-sm font-medium">Kopist</div>
+              <div class="text-[#192339] text-sm font-base">{{teamDetail?.documents.length}}</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+  <div class="flex flex-col items-center rounded-lg empty-box py-16"
+       *ngIf="(teamDetail?.documents?.length == 0 || !teamDetail?.documents)">
+    <img src="assets/team/empty-teammate.svg" alt="empty">
+    <div class="text-[#9196A2] text-[22px] font-medium text-center mt-4">No documents were created
+      by {{teamDetail?.first_name}}</div>
+  </div>
+  <div class="flex flex-wrap my-2 -mx-2 " *ngIf="docListView">
+    <div class="w-full pl-2 pt-2 pr-2 pb-9" *ngFor="let data of teamDetail?.documents;let i = index">
+      <div class="flex w-full rounded-lg px-6 py-4 bg-white items-center justify-between">
+        <div routerLink="/dashboard/editor/{{data?.slug ? data?.slug : data?.id}}"
+             class="flex items-center w-[25%] cursor-pointer">
+          <div class="flex items-center justify-center bg-white p-2 rounded-full flex-none border-4 w-10 h-10"
+               [ngClass]="data.icon?'border-none':'border-[#5B51EF]'">
+            <div *ngIf="!data.icon" class="text-2xl font-semibold text-[#5B51EF]">{{data?.name[0]}}</div>
+            <img *ngIf="data?.icon"
+                 class="min-w-[28px] max-w-[28px] max-h-[28px] min-h-[28px] transition duration-500"
+                 src="{{data?.icon}}" alt="">
+          </div>
+          <div
+            class="text-base font-normal text-[#192339] ml-3 overflow-hidden whitespace-nowrap text-ellipsis capitalize">
+            {{data?.name}}
+          </div>
+        </div>
+        <div class="text-base font-medium text-[#5B61F3] w-[20%] text-center break-words capitalize">
+          {{teamName}}
+        </div>
+        <div class="flex flex-col w-[20%] justify-center">
+          <div class="text-sm font-normal text-[#192339] break-words capitalize">
+            By {{teamDetail?.first_name + " " + teamDetail?.last_name}}
+          </div>
+          <div class="text-xs font-normal text-[#9196A2] break-words">
+            {{data?.created_at
+            | dateAgo}}
+          </div>
+        </div>
+        <div class="bg-[#F6F8FF] py-2 px-4 rounded-lg flex items-center w-[20%] justify-between">
+          <div class="text-xs font-medium text-[#FB707F] ">
+            {{data?.doument_steps.length
+            }} Steps
+          </div>
+          <div class="flex ml-4 flex-wrap">
+            <img src="assets/card-icons/gridView.svg" alt="">
+            <div class="text-sm text-[#192339] font-normal ml-1">{{data?.views}}</div>
+          </div>
+          <div class="flex ml-4 flex-wrap">
+            <img src="assets/card-icons/gridReaction.svg" alt="">
+            <div class="text-sm text-[#192339] font-normal ml-1">{{data?.reactions?.length}}</div>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <img class="cursor-pointer" (click)="copyToClipboard(data?.slug ? data?.slug : data?.id)"
+               src="assets/dashboardicons/link.png">
+          <img class="cursor-pointer" *ngIf="!getFavoriteDoc(data?.favourite_document)"
+               (click)="addTofavorite(data)" src="assets/dashboardicons/favourite.png">
+          <img class="cursor-pointer" *ngIf="getFavoriteDoc(data?.favourite_document)"
+               (click)="removeFavorite(data)" src="assets/dashboardicons/fav-done.svg">
+          <div appClickOutside [appClickOutside]="'card'+i" (clickOutside)="closeMenu(i)"
+               class="dropdown inline-block relative cursor-pointer">
+
+            <img class="cursor-pointer" src="assets/dashboardicons/menu_e.png" alt="options"
+                 (click)="cardMenu = !cardMenu;menuIndex=i">
+            <ul [class.active]="cardMenu" id="card{{i}}" #card{{i}} *ngIf="cardMenu && menuIndex == i"
+                class="absolute  py-3 px-2 bg-[white] rounded-[10px] opacity-100 z-10 right-0 top-2 options-menu w-max">
+              <li class="flex py-3 px-2 hover:bg-[#F0F1FF] rounded-lg"
+                  (click)="shareDialogue = !shareDialogue;selectedDocUsers=data?.doument_users;selectedDocId=data?.id;selectedDocSlug=data?.slug;cardMenu = false">
+                <div class="font-medium text-sm whitespace-nowrap text-[#192339]">
+                  Share
+                </div>
+              </li>
+              <li class="flex py-3 px-2 hover:bg-[#F0F1FF] rounded-lg"
+                  (click)="moveTeamDialogue = !moveTeamDialogue;selectedDocId=data?.id">
+                <div class="font-medium text-sm whitespace-nowrap text-[#192339]">
+                  Move to Team
+                </div>
+              </li>
+              <li class="flex py-3 px-2 hover:bg-[#F0F1FF] rounded-lg"
+                  (click)="duplicateDocument(data?.id)">
+                <div class="font-medium text-sm whitespace-nowrap text-[#192339]">
+                  Duplicate
+                </div>
+              </li>
+              <li class="flex py-3 px-2 hover:bg-[#F0F1FF] rounded-lg"
+                  (click)="deleteDocuments(i,data?.id,$event)">
+                <div class="font-medium text-sm whitespace-nowrap text-[#192339]">
+                  Delete
+                </div>
+              </li>
+
+            </ul>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="flex flex-wrap my-2 -mx-2 " *ngIf="!docListView">
+    <div class="w-full lg:w-1/3 p-2" *ngFor="let data of teamDetail?.documents;let i = index">
+      <div
+        class="flex flex-col justify-around flex-grow w-full rounded-lg pl-6 pt-3 pr-3 pb-6 bg-white border border-[#E8EEFA] workflow-card">
+        <div class="flex items-center ml-auto space-x-2">
+          <img (click)="copyToClipboard(data?.slug ? data?.slug : data?.id)" class="cursor-pointer "
+               src="assets/dashboardicons/copy-link.svg">
+          <img class="cursor-pointer" *ngIf="!getFavoriteDoc(data?.favourite_document)"
+               (click)="addTofavorite(data)" src="assets/dashboardicons/favourite-grid.svg">
+          <img class="cursor-pointer" *ngIf="getFavoriteDoc(data?.favourite_document)"
+               (click)="removeFavorite(data)" src="assets/dashboardicons/grid-fav-done.svg">
+          <div appClickOutside [appClickOutside]="'card'+i" (clickOutside)="closeMenu(i)"
+               class="dropdown inline-block relative cursor-pointer">
+            <img class="cursor-pointer" src="assets/dashboardicons/card-menu.svg" alt="options"
+                 (click)="cardMenu = !cardMenu;menuIndex=i">
+            <ul [class.active]="cardMenu" id="card{{i}}" #card{{i}} *ngIf="cardMenu && menuIndex == i"
+                class="absolute  py-3 px-2 bg-[white] rounded-[10px] opacity-100 z-10 right-0 top-2 options-menu w-max">
+              <li class="flex py-3 px-2 hover:bg-[#F0F1FF] rounded-lg"
+                  (click)="shareDialogue = !shareDialogue;selectedDocUsers=data?.doument_users;selectedDocId=data?.id;selectedDocSlug=data?.slug;cardMenu = false">
+                <div class="font-medium text-sm whitespace-nowrap text-[#192339]">
+                  Share
+                </div>
+              </li>
+              <li class="flex py-3 px-2 hover:bg-[#F0F1FF] rounded-lg"
+                  (click)="moveTeamDialogue = !moveTeamDialogue;selectedDocId=data?.id;cardMenu = false">
+                <div class="font-medium text-sm whitespace-nowrap text-[#192339]">
+                  Move to Team
+                </div>
+              </li>
+              <li class="flex py-3 px-2 hover:bg-[#F0F1FF] rounded-lg"
+                  (click)="duplicateDocument(data?.id);cardMenu = false">
+                <div class="font-medium text-sm whitespace-nowrap text-[#192339]">
+                  Duplicate
+                </div>
+              </li>
+              <li class="flex py-3 px-2 hover:bg-[#F0F1FF] rounded-lg"
+                  (click)="deleteDocuments(i,data?.id,$event);cardMenu = false">
+                <div class="font-medium text-sm whitespace-nowrap text-[#192339]]">
+                  Delete
+                </div>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+        <div class="flex justify-between pb-2 pr-14"
+             routerLink="/dashboard/editor/{{data?.slug ? data?.slug : data?.id}}">
+                    <span
+                      class="text-base cursor-pointer font-medium text-[#262626] whitespace-nowrap text-ellipsis overflow-hidden">{{data?.name}}</span>
+
+        </div>
+        <div routerLink="/dashboard/editor/{{data?.slug ? data?.slug : data?.id}}"
+             class="flex items-center justify-between">
+          <div
+            class="font-medium text-lg cursor-pointer text-[#727272] whitespace-nowrap overflow-hidden text-ellipsis">
+            {{teamName}}
+          </div>
+          <div
+            class="flex justify-center items-center bg-white p-2 rounded-full flex-none w-8 h-8 md:w-12 md:h-12 ">
+            <div *ngIf="!data.icon" class="text-2xl font-semibold text-[#5B51EF]">{{data?.name[0]}}</div>
+
+            <img *ngIf="data?.icon"
+                 class="min-w-[32px] max-w-[32px] max-h-[32px] min-h-[32px] transition duration-500"
+                 [src]="data?.icon" alt="">
+
+          </div>
+        </div>
+        <div class="text-xs flex justify-start items-center pt-2"
+             routerLink="/dashboard/editor/{{data?.slug ? data?.slug : data?.id}}">
+          <div class="flex">
+            <img src="assets/card-icons/gridView.svg" alt="">
+            <div class="text-sm text-[#192339] font-normal ml-1">{{data?.views}}</div>
+          </div>
+          <div class="flex ml-4">
+            <img src="assets/card-icons/gridReaction.svg" alt="">
+            <div class="text-sm text-[#192339] font-normal ml-1">{{data?.reactions?.length ?
+              data?.reactions?.length : 0}}</div>
+          </div>
+          <div class=" text-[#FB707F] text-sm font-normal ml-4"> {{data.doument_steps?.length
+            }} Steps
+          </div>
+        </div>
+        <div class="text-xs flex justify-start items-center pt-4"
+             routerLink="/dashboard/editor/{{data?.slug ? data?.slug : data?.id}}">
+                    <span class=" text-[#727272] text-xs cursor-pointer font-normal">{{data?.created_at
+                      | dateAgo}}</span>
+          <span
+            class="text-[#5B51EF] text-xs font-normal cursor-pointer ml-0 lg:ml-2 whitespace-nowrap overflow-hidden text-ellipsis capitalize">{{teamDetail?.first_name}}</span>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>

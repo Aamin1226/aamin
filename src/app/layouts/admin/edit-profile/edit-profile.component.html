@@ -1,0 +1,123 @@
+<div class="modal-container invite-modal flex justify-center items-center fixed top-0 right-0 bottom-0 left-0">
+  <div class="modal bg-white  pb-14 pt-6 rounded-md flex flex-col items-center w-[550px]">
+    <div class="px-16 flex w-full ml-20">
+      <img (click)="closeModal()" class="ml-auto pb-5 cursor-pointer" src="assets/team/cross.svg"
+           alt="close">
+    </div>
+    <div class="px-16 flex mr-auto">
+      <img class="pr-2" src="assets/authicons/emoji.png" alt="emoji"/>
+      <div class="text-2xl font-bold text-[#192339]">
+        Edit Profile
+      </div>
+    </div>
+    <div class="pr-16 text-black text-base pb-8 mr-auto pl-[100px] opacity-50 mt-2">
+      Update your profile details
+    </div>
+    <div class="flex w-full mb-3 relative mr-0 border-b">
+      <div class="flex-col text-sm font-medium cursor-pointer  ml-16" (click)="profileOptions = !profileOptions">
+        <div class="px-1" [ngClass]="!profileOptions?'text-[#5B61F3]':'text-[#9196A2]'">Profile</div>
+        <div class="invite-border mt-2" *ngIf="!profileOptions"></div>
+      </div>
+      <div class="text-sm font-medium ml-11 cursor-pointer" (click)="profileOptions = !profileOptions">
+        <div class="px-1" [ngClass]="profileOptions?'text-[#5B61F3]':'text-[#9196A2]'">Password</div>
+        <div class="invite-border mt-2" *ngIf="profileOptions"></div>
+      </div>
+    </div>
+    <div class="px-16 w-full mt-8" *ngIf="!profileOptions" (keydown.enter)="saveChanges()">
+      <div class=" flex-none flex justify-center cursor-pointer pb-8">
+        <div class="w-24 h-24 flex" *ngIf="false">
+          <img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShta_GXR2xdnsxSzj_GTcJHcNykjVKrCBrZ9qouUl0usuJWG2Rpr_PbTDu3sA9auNUH64&usqp=CAU"
+            alt="profile" class="shadow rounded-full object-cover"/>
+        </div>
+        <label class="w-24 h-24 flex justify-center items-center rounded-full relative image-container cursor-pointer"
+               (mouseenter)="editImage = true" (mouseleave)="editImage = false" for="fileInput"
+               [ngClass]="profileImage?'':'bg-[#FAF0FF]'">
+          <img *ngIf="profileImage" [src]="profileImage" alt="profile"
+               class="shadow rounded-full object-cover image w-full h-full"/>
+          <div *ngIf="!profileImage" class="font-bold text-4xl text-[#8842A1] image uppercase">
+            {{editProfileForm.controls['first_name'].value[0] + editProfileForm.controls['last_name'].value[0]}}</div>
+          <div class="text-black text-base text-sm absolute" *ngIf="editImage">Edit profile</div>
+        </label>
+        <input id="fileInput" accept="image/*" type='file' class="hidden" (change)="onSelectFile($event)">
+      </div>
+
+      <div [formGroup]="editProfileForm" class="flex flex-col mr-auto w-full mb-3">
+        <label class="text-sm font-normal mb-1 ml-2 text-[#03014]" for="team">First Name</label>
+        <input formControlName="first_name" class="border border-[#D9D9D9] px-4 rounded-md h-10 text-sm" type="text"
+               name="" id="">
+        <div
+          class="error-text items-center flex w-full bg-[#FFEEEE] text-[#BE4B49] text-xs py-1 pl-4 border-t border-[#BE4B49]"
+          *ngIf="editProfileForm.controls['first_name'].invalid  && (editProfileForm.controls['first_name'].dirty || editProfileForm.controls['first_name'].touched)"
+          alt="e">
+          <span class="text-[#BE4B49] text-xs ml-2">Please enter your first name!
+          </span>
+        </div>
+      </div>
+
+      <div [formGroup]="editProfileForm" class="flex flex-col mr-auto w-full mb-3">
+        <label class="text-sm font-normal mb-1 ml-2 text-[#03014]" for="team">Last Name</label>
+        <input formControlName="last_name" class="border border-[#D9D9D9] rounded-md h-10 text-sm px-4" type="text"
+               name="" id="">
+        <div
+          class="error-text items-center flex w-full bg-[#FFEEEE] text-[#BE4B49] text-xs py-1 pl-4 border-t border-[#BE4B49]"
+          *ngIf="editProfileForm.controls['last_name'].invalid  && (editProfileForm.controls['last_name'].dirty || editProfileForm.controls['last_name'].touched)"
+          alt="e">
+          <span class="text-[#BE4B49] text-xs ml-2">Please enter your last name!
+          </span>
+        </div>
+      </div>
+
+      <div (click)="saveChanges()" class="flex space-x-3 mt-4 w-full">
+        <button type="submit" [disabled]="editProfileForm.invalid"
+                class="px-6 py-2 bg-[#5B61F3] rounded-lg inline-flex items-center justify-center ml-auto">
+          <span class="text-white font-base text-sm">Save Changes</span>
+        </button>
+      </div>
+    </div>
+    <div class="px-16 w-full mt-8" *ngIf="profileOptions" (keydown.enter)="changePassword()">
+      <div [formGroup]="resetPasswordForm" class="flex flex-col mr-auto w-full mb-3">
+        <label class="text-sm font-normal mb-1 ml-2 text-[#03014]" for="team">Old Password</label>
+        <input formControlName="old_password" class="border border-[#D9D9D9] px-4 rounded-md h-10 text-sm"
+               type="password" name="" id="">
+        <div
+          class="error-text items-center flex w-full bg-[#FFEEEE] text-[#BE4B49] text-xs py-1 pl-4 border-t border-[#BE4B49]"
+          *ngIf="resetPasswordForm.controls['old_password'].invalid  && (resetPasswordForm.controls['old_password'].dirty || resetPasswordForm.controls['old_password'].touched)"
+          alt="e">
+          <span class="text-[#BE4B49] text-xs ml-2">Please enter old password
+          </span>
+        </div>
+      </div>
+      <div [formGroup]="resetPasswordForm" class="flex flex-col mr-auto w-full mb-3">
+        <label class="text-sm font-normal mb-1 ml-2 text-[#03014]" for="team">New Password</label>
+        <input formControlName="new_password" class="border border-[#D9D9D9] px-4 rounded-md h-10 text-sm"
+               type="password" name="" id="">
+        <div
+          class="error-text items-center flex w-full bg-[#FFEEEE] text-[#BE4B49] text-xs py-1 pl-4 border-t border-[#BE4B49]"
+          *ngIf="resetPasswordForm.get('new_password')!.hasError('passwordStrength')" alt="e">
+          <span class="text-[#BE4B49] text-xs ml-2">Password must contain at least two of the following: numbers,
+            lowercase letters, uppercase letters, or special characters.
+          </span>
+        </div>
+      </div>
+
+      <div [formGroup]="resetPasswordForm" class="flex flex-col mr-auto w-full mb-3">
+        <label class="text-sm font-normal mb-1 ml-2 text-[#03014]" for="team">Confirm New Password</label>
+        <input formControlName="confirm_password" class="border border-[#D9D9D9] rounded-md h-10 text-sm px-4"
+               type="password" name="" id="">
+        <div
+          class="error-text items-center flex w-full bg-[#FFEEEE] text-[#BE4B49] text-xs py-1 pl-4 border-t border-[#BE4B49]"
+          *ngIf="resetPasswordForm.get('confirm_password')?.hasError('matching') && (resetPasswordForm.get('confirm_password')?.dirty || resetPasswordForm.get('confirm_password')?.touched)"
+          alt="e">
+          <span class="text-[#BE4B49] text-xs ml-2">Please enter correct password!
+          </span>
+        </div>
+      </div>
+
+      <div (click)="changePassword()" class="flex space-x-3 mt-4 w-full">
+        <button type="submit" [disabled]="resetPasswordForm.invalid"
+                class="px-6 py-2 bg-[#5B61F3] rounded-lg inline-flex items-center justify-center ml-auto">
+          <span class="text-white font-base text-sm">Save Changes</span>
+        </button>
+      </div>
+    </div>

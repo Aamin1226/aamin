@@ -1,0 +1,53 @@
+option {
+  font-weight: 400;
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+select {
+  border: 1px solid #D9D9D9;
+  border-radius: 4px;
+  padding: 12px;
+  font-weight: 400;
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+
+input[type='text'] {
+  border: 1px solid #D9D9D9;
+  border-radius: 4px;
+  padding: 12px;
+  font-weight: 400;
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.kopist-radio {
+  accent-color: #5B61F3;
+}
+
+
+.plan-modal {
+  width: 800px;
+}
+
+.ques-container {
+  flex-wrap: wrap;
+}
+
+.ques-card {
+  flex-basis: 33.33%;
+  max-width: 208px;
+  min-width: 208px;
+  min-height: 151px;
+  min-height: 151px;
+}
+
+.ques-card:nth-child(1) {
+  margin-top: 20px;
+}
+
+.ques-card:nth-child(4) {
+  margin-left: 0;
+}

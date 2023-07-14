@@ -1,0 +1,89 @@
+<app-invite-member [teamId]="myDefaultTeam?.id" *ngIf="inviteTeammateDialogue"></app-invite-member>
+<app-change-role [memberDetails]="memberDetail" [teamId]="myDefaultTeam.id"
+    *ngIf="changeRoleDialogue"></app-change-role>
+<div class="content ml-[75px]  transform ease-in-out duration-500 px-2 md:px-12 lg:px-2 pt-24 pb-4 ">
+    <div class="flex py-3 justify-between items-center">
+        <div class="flex items-center">
+            <img src="assets/team/team-icon.svg" alt="team">
+            <div class="text-lg font-medium text-[#192339] ml-2">{{myDefaultTeam?.team_name}}</div>
+        </div>
+        <button
+            class="flex justify-center bg-[#5B61F3] items-center font-medium text-white text-sm py-3 px-5 rounded-lg"
+            (click)="inviteTeammateDialogue = !inviteTeammateDialogue">Invite Teammates</button>
+    </div>
+    <div class="flex flex-wrap my-2 -mx-2 ">
+        <div class="w-full lg:w-1/4 pl-2 pt-2 pr-9 pb-9" *ngFor="let data of myTeams;let i = index">
+            <div class="flex flex-col w-full rounded-lg  bg-white cursor-pointer relative"
+                (mouseover)="menubtn = true;menuIndex=i" (mouseleave)="menubtn = false;menuIndex=-1;cardMenu = false">
+                <div class="dropdown !absolute right-[2px] top-[27px] w-4 inline-block relative cursor-pointer"
+                    (click)="cardMenu = !cardMenu;menuIndex=i" *ngIf="menubtn && menuIndex == i">
+
+                    <img class="cursor-pointer" src="assets/team/team-opt.svg" alt="options">
+                    <ul *ngIf="cardMenu && menuIndex == i"
+                        class=" absolute  py-3 px-2 bg-[white] rounded-[10px] opacity-100 z-10 right-0 top-6 options-menu w-max">
+                        <li class="flex py-3 px-2 hover:bg-[#F0F1FF] rounded-lg"
+                            (click)="memberDetail=data;changeRoleDialogue = true">
+                            <img src="assets/team/change-role.svg" alt="role">
+                            <div class="font-medium text-sm whitespace-nowrap text-[#192339] ml-2">
+                                Change Role </div>
+                        </li>
+                        <li class="flex py-3 px-2 hover:bg-[#F0F1FF] rounded-lg"
+                            (click)="deleteMember(data?.id,myDefaultTeam?.id)">
+                            <img src="assets/team/delete-mem.svg" alt="delete">
+                            <div class="font-medium text-sm whitespace-nowrap text-[#192339] ml-2">
+                                Delete </div>
+                        </li>
+                    </ul>
+
+                </div>
+                <div class="flex flex-col w-full p-6 pb-4"
+                    routerLink="/dashboard/teammates/{{data?.id}}/{{myDefaultTeam.id}}">
+                    <div
+                        class="ml-auto w-fit px-2 py-1 bg-[#F0F1FF] rounded-[28px] text-[10px] font-medium text-[#5B51EF]">
+                        {{data?.role?.name}}
+                    </div>
+                    <div *ngIf="!data.image"
+                        class="uppercase mr-auto text-center w-14 h-14 px-4 py-[14px] rounded-full text-lg font-bold"
+                        ngClass="{{data?.color}}">
+                        {{data?.first_name[0] + data?.last_name[0]}}
+                    </div>
+                    <div *ngIf="data.image" class=" mr-auto w-14 h-14 rounded-full text-lg font-bold overflow-hidden">
+                        <img class="min-w-[56px] max-w-[56px] max-h-[56px] min-h-[56px] transition duration-500"
+                            src="{{data?.image}}" alt="">
+                    </div>
+                    <div
+                        class="capitalize mt-4 mr-auto text-[20px] font-medium text-[#192339] max-w-full text-ellipsis overflow-hidden whitespace-nowrap">
+                        {{data?.first_name}} {{data?.last_name}}
+                    </div>
+                    <div
+                        class="mt-1 mr-auto text-xs font-normal text-[#192339b3] max-w-full text-ellipsis overflow-hidden">
+                        {{ data?.email
+                        }}
+                    </div>
+                    <div class="mt-8 mr-auto text-xs font-normal text-[#192339b3] flex">
+                        <img src="assets/team/kopist-num.svg" alt="num">
+                        <div class="ml-2 text-xs font-medium text-[#9196A2]">{{data?.documents.length
+                            }} Kopist</div>
+                    </div>
+                </div>
+
+                <div class="w-full flex items-center justify-between mt-8 mr-auto p-6 pt-3 pb-4 border-t border-[#E9E9E9]"
+                    routerLink="/dashboard/teammates/{{data?.id}}/{{myDefaultTeam.id}}">
+                    <div class="text-base font-normal text-[#192339]">
+                        Joined
+                    </div>
+                    <div class="flex items-center">
+                        <img src="assets/team/date.svg" alt="date">
+                        <div class="ml-2 text-xs font-medium text-[#9196A2] whitespace-nowrap">
+                            {{data?.created_at
+                            | date}}
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>

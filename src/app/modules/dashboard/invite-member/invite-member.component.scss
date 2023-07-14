@@ -1,0 +1,30 @@
+.invite-modal{
+    background: none;
+    backdrop-filter: blur(5px);
+}
+.invite-border{
+    height: 3px;
+    background: #5B61F3;
+border-radius: 4px 4px 0px 0px;
+}
+
+
+.pending-list{
+    border-width: 0px 1px 1px 1px;
+border-style: solid;
+border-color: #E4E4E4;
+}
+
+
+
+.pending-table{
+    border-radius: 8px 8px 0px 0px;
+}
+
+.top-100 {top: 100%}
+.bottom-100 {bottom: 100%}
+.max-h-select {
+    max-height: 300px;
+}
+
+  

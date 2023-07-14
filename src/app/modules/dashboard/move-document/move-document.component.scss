@@ -1,0 +1,37 @@
+.move-modal{
+    background: none;
+    backdrop-filter: blur(5px);
+}
+
+option{
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    color: #192339;
+}
+
+select{
+    border: 1px solid #D9D9D9;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    color: #192339;
+    margin: 0;      
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+select.select-team{
+    background-image:url(../../../../assets/dashboardicons/arrow-grey.svg);
+  background-position:
+    calc(100% - 20px) calc(1em + 2px),
+    calc(100% - 15px) calc(1em + 2px),
+    100% 0;
+  background-repeat: no-repeat;
+}

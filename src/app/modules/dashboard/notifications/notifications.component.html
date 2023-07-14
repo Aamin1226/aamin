@@ -1,0 +1,67 @@
+<div class="content ml-[75px]  transform ease-in-out duration-500 px-2 md:px-12 lg:px-2 pt-24 pb-4 ">
+  <div class="flex py-3 justify-between items-center">
+    <div class="flex items-center">
+      <img src="assets/dashboardicons/notify.svg" alt="notify">
+      <div class="text-lg font-medium text-[#192339] ml-2">All Notifications</div>
+    </div>
+  </div>
+  <div class="flex -mx-2 ">
+    <div class="w-full pl-2 pr-2 pt-6 pb-6">
+      <div class="flex w-full rounded-lg p-0 teammate-stats items-center justify-between bg-white">
+        <div class="flex flex-col w-full">
+          <div class="flex w-full relative border-b pl-10 pt-5">
+            <div class="flex-col text-sm font-medium cursor-pointer" (click)="notifyTab = !notifyTab">
+              <div class="px-1" [ngClass]="!notifyTab?'text-[#5B61F3]':'text-[#9196A2]'">My Activity </div>
+              <div class="activity-border mt-2" *ngIf="!notifyTab"></div>
+            </div>
+            <div class="text-sm font-medium cursor-pointer ml-9" (click)="notifyTab = !notifyTab">
+              <div class="px-1" [ngClass]="notifyTab?'text-[#5B61F3]':'text-[#9196A2]'">Team Activity</div>
+              <div class="activity-border mt-2" *ngIf="notifyTab"></div>
+            </div>
+          </div>
+
+          <ng-container *ngIf="!notifyTab">
+            <div class="flex pl-10 pt-5 border-b" *ngFor="let data of notifications">
+              <!-- <div
+                class="flex justify-center items-center bg-white p-2 rounded-full border-[2px] flex-none w-6 h-6 border-[#CC2127]">
+                <img class="min-w-[16px] max-w-[16px] max-h-[16px] min-h-[16px]"
+                  src="assets/dashboardicons/pinterest-logo-p-png-0 1.png" alt="favicon">
+              </div> -->
+              <div
+              class="flex justify-center items-center bg-[#F0FCFF] p-2 rounded-full text-sm w-6 h-6 text-[#428EA1] uppercase">
+              {{data?.title[0]}}
+            </div>
+              <div class="flex flex-col ml-2 items-start pb-4 ">
+                <div class="text-sm font-normal text-[#192339]">{{data?.title}}</div>
+                <div class="text-[10px] font-normal text-[#9196A2] mt-0.5">{{data?.created_at | dateAgo
+                  }}</div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="notifyTab">
+            <div class="flex pl-10 pt-5 border-b" *ngFor="let data of teamActivity?.activities">
+              <div
+                class="flex justify-center items-center bg-[#F0FCFF] p-2 rounded-full text-sm w-6 h-6 text-[#428EA1] uppercase">
+                {{data?.user?.first_name[0] + data?.user?.last_name[0]}}
+              </div>
+              <div class="flex flex-col ml-2 items-start pb-4 ">
+                <div class="text-sm font-normal text-[#192339]">{{data?.user?.first_name + " " + data?.user?.last_name}}
+                </div>
+                <div class="text-xs font-normal text-[#9196A2] mt-0.5 text-start"><span
+                    class="text-[#192339]">{{data?.title}}</span></div>
+                <div class="text-[10px] font-normal text-[#9196A2] mt-0.5">{{data?.created_at | dateAgo
+                  }}</div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+
+
+
+
+
+      </div>
+
+    </div>
+  </div>
+</div>

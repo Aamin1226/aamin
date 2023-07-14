@@ -1,0 +1,98 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Poppins';
+  font-style: normal;
+  // color: #192339;
+}
+
+.logo-margin {
+  margin-left: 104px;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.modal-container {
+  background-image: url(assets/Overlay.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  z-index: 50;
+}
+
+.modal {
+  box-shadow: 0 4px 19px rgba(0, 0, 0, 0.12);
+}
+
+.search-results {
+  box-shadow: 10px 24px 54px rgba(0, 0, 0, 0.06);
+  border-radius: 0 0 9px 9px;
+}
+
+.toast-top-center {
+  top: 1rem !important;
+}
+
+.toast-container .ngx-toastr {
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+
+.toast-container .ngx-toastr:hover {
+  box-shadow: none !important;
+}
+
+.toast-error {
+  background-image: url("assets/authicons/error-icon.svg") !important;
+}
+
+.toast-success {
+  background-image: url("assets/authicons/success.png") !important;
+}
+
+.toast-success {
+  color: #01BEA3 !important;
+  font-size: 18px !important;
+  font-weight: 400 !important;
+  border: 1px solid #01BEA3 !important;
+  background-color: #D8FFF9 !important;
+}
+
+.toast-error {
+  color: #BE4B49 !important;
+  font-size: 18px !important;
+  font-weight: 400 !important;
+  border: 1px solid #BE4B49 !important;
+  background-color: #FFEEEE !important;
+}
+
+.toast-progress {
+  display: none !important;
+}
+
+.options-menu {
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.06);
+}
+
+.ptro-holder-wrapper {
+  width: 100% !important;
+}
+
+// .ptro-holder {
+//   top: 50% !important;
+//   right: 50% !important;
+//   left: auto !important;
+//   height: calc(100% - 84px);
+//   transform: translate(50%, -50%);
+// }

@@ -1,0 +1,165 @@
+<app-edit-profile *ngIf="editProfilePageEnabled"></app-edit-profile>
+<div class="fixed w-full z-30 flex bg-white p-2 items-center justify-center h-24 px-10 border-b border-[#E8EEFA]">
+  <div *ngIf="isEditorRoute()  " (click)="goBack()"
+       class="rounded-full w-8 h-8 flex justify-center items-center cursor-pointer">
+    <img class="w-5 h-5" src="assets/editoricons/back-button.svg" alt="profile" class=" object-cover"/>
+  </div>
+  <div
+    class=" transform ease-in-out duration-500 flex-none h-full  hidden md:flex justify-center flex-col items-start w-[119px] h-[30px]"
+    *ngIf="!isEditorRoute()">
+    <img src="assets/kopist-logo.svg" alt="logo" class=" object-cover"/>
+  </div>
+  <div class="grow h-full flex items-center justify-center">
+    <div class="relative search-bar hidden md:block w-1/2 rounded-lg overflow-visible" *ngIf="!isEditorRoute()">
+
+      <div class="absolute left-0 w-full bg-white top-10 search-results pl-11 pr-2 max-h-[250px]"
+           *ngIf="searchData?.length != 0 && showSearch">
+        <perfect-scrollbar>
+          <div class="flex flex-col mt-5 max-h-[230px]">
+            <div class="text-sm font-normal text-[#9196A2]">Results</div>
+            <div class="text-sm font-normal text-[#9196A2] mt-4 pb-4 flex items-center space-x-2 cursor-pointer"
+                 *ngFor="let data of searchData" routerLink="/dashboard/editor/{{data?.slug ? data?.slug : data?.id}}">
+              <div
+                class="flex justify-center items-center bg-white p-2 flex-none w-6 h-6">
+                <div *ngIf="!data.icon" class="text-2xl font-semibold text-[#5B51EF]">
+                  {{data?.name[0]}}</div>
+                <img *ngIf="data?.icon"
+                     class="min-w-[32px] max-w-[32px] max-h-[32px] min-h-[32px] transition duration-500"
+                     src="{{data?.icon}}" alt="">
+
+              </div>
+              <div class="font-normal text-sm text-[#192339]">{{data?.name}}</div>
+              <div class="font-medium text-sm text-[#5B61F3]">Kopist's Team</div>
+              <div class="font-normal text-xs text-[#192339]">By {{ getOwnerName(data?.doument_users
+              )}}</div>
+            </div>
+          </div>
+        </perfect-scrollbar>
+      </div>
+
+      <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+
+        <img class="w-5 h-5" src="assets/dashboardicons/search.svg" alt="profile" class=" object-cover"/>
+      </div>
+      <input type="text" (keyup)="search($event)" (focus)="search($event)" id="table-search"
+             class="bg-[#F6F8FF] border-none font-normal text-sm placeholder:text-[#9196A2] placeholder:text-sm focus:outline-none block w-full pl-10 p-2.5 rounded-lg"
+             placeholder="Search">
+    </div>
+  </div>
+  <div class="flex-none h-full text-center flex items-center justify-center">
+
+    <div class="flex space-x-4 items-center px-3 mr-0 lg:mr-2">
+
+      <div class="w-5 h-5 flex rounded nav-icon cursor-pointer" *ngIf="isEditorRoute()" (click)="chatClick()">
+        <img src="assets/editoricons/chat-icon.svg" alt="fav" class=" object-cover"/>
+      </div>
+      <div class="w-5 h-5 flex rounded nav-icon cursor-pointer" *ngIf="isEditorRoute()">
+        <img (click)="addTofavorite()" src="assets/editoricons/star.svg" alt="fav" class=" object-cover"
+             *ngIf="!isFavorite"/>
+        <img (click)="removeFavorite()" src="assets/dashboardicons/fav-done.svg" alt="fav"
+             class=" object-cover" *ngIf="isFavorite"/>
+      </div>
+      <!-- <div class="w-5 h-5 flex rounded nav-icon cursor-pointer">
+                    <img src="assets/dashboardicons/addUserNav.svg" alt="adduser" class=" object-cover" />
+                </div> -->
+      <div class="w-5 h-5 flex rounded nav-icon  relative" appClickOutside [appClickOutside]="targetId"
+           (clickOutside)="closeMenu()">
+        <img src="assets/dashboardicons/bell-no.svg" alt="bell" class=" object-cover cursor-pointer"
+             (click)="showNotification = !showNotification;"/>
+        <div class="w-2 h-2 rounded-full bg-[#586AF6] right-0 absolute"
+             *ngIf="notifications?.length > 0 || teamActivity?.activities?.length > 0 "></div>
+        <div class="absolute right-0 w-[336px] bg-white top-10 border notification-box" *ngIf="showNotification"
+             [class.active]="showNotification" id="notificationDropdown" #notificationDropdown>
+          <div class="flex flex-col">
+            <div class="text-lg font-medium text-[#192339] mr-auto pl-10 pt-4">Notifications</div>
+            <div class="flex w-full relative border-b pl-10 pt-5">
+              <div class="flex-col text-sm font-medium cursor-pointer" (click)="notifyTab = !notifyTab">
+                <div class="px-1" [ngClass]="!notifyTab?'text-[#5B61F3]':'text-[#9196A2]'">My Activity</div>
+                <div class="activity-border mt-2" *ngIf="!notifyTab"></div>
+              </div>
+              <div class="text-sm font-medium cursor-pointer ml-9" (click)="notifyTab = !notifyTab">
+                <div class="px-1" [ngClass]="notifyTab?'text-[#5B61F3]':'text-[#9196A2]'">Team Activity</div>
+                <div class="activity-border mt-2" *ngIf="notifyTab"></div>
+              </div>
+            </div>
+
+            <ng-container *ngIf="!notifyTab">
+              <div class="flex pl-10 pt-5 border-b" *ngFor="let data of notifications">
+                <!-- <div
+                  class="flex justify-center items-center bg-white p-2 rounded-full border-[2px] flex-none w-6 h-6 border-[#CC2127]">
+                  <img class="min-w-[16px] max-w-[16px] max-h-[16px] min-h-[16px]"
+                    src="assets/dashboardicons/pinterest-logo-p-png-0 1.png" alt="favicon">
+                </div> -->
+                <div
+                  class="flex justify-center items-center bg-[#F0FCFF] p-2 rounded-full text-sm w-6 h-6 text-[#428EA1] uppercase">
+                  {{data?.title[0]}}
+                </div>
+                <div class="flex flex-col ml-2 items-start pb-4 ">
+                  <div class="text-sm font-normal text-[#192339] text-left">{{data?.title}}</div>
+                  <div class="text-[10px] font-normal text-[#9196A2] mt-0.5">{{data?.created_at | dateAgo
+                    }}</div>
+                </div>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="notifyTab">
+              <div class="flex pl-10 pt-5 border-b "
+                   *ngFor="let data of teamActivity?.activities.slice(0,3)">
+                <div
+                  class="flex justify-center items-center bg-[#F0FCFF] p-2 rounded-full text-sm w-6 h-6 text-[#428EA1] uppercase">
+                  {{data?.user?.first_name[0] + data?.user?.last_name[0]}}
+                </div>
+                <div class="flex flex-col ml-2 items-start pb-4 ">
+                  <div class="text-sm font-normal text-[#192339] capitalize">{{data?.user?.first_name + " " +
+                  data?.user?.last_name}}</div>
+                  <div class="text-[10px] font-normal text-[#9196A2] mt-0.5 text-start"><span
+                    class="text-[#192339]">{{data?.title}}</span></div>
+                  <div class="text-[10px] font-normal text-[#9196A2] mt-0.5">{{data?.created_at | dateAgo
+                    }}</div>
+                </div>
+              </div>
+            </ng-container>
+            <div routerLink="/dashboard/notifications"
+                 class="pl-10 py-3 text-sm text-[#5B61F3] font-medium mr-auto cursor-pointer">View All
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      <!-- <div class="w-5 h-5 flex rounded nav-icon cursor-pointer">
+                    <img src="assets/dashboardicons/query.svg" alt="help" class=" object-cover" />
+                </div> -->
+      <div class="flex-none flex justify-center cursor-pointer" (click)="editProfile()" *ngIf="!isEditorRoute()">
+        <div class="w-[42px] h-[42px] flex bg-[#FAF0FF] justify-center items-center rounded-full" *ngIf="true">
+          <div *ngIf="!profileImage" class="font-bold text-sm text-[#8842A1] uppercase">{{name[0] + lastName[0]}}</div>
+          <img *ngIf="profileImage" [src]="profileImage" alt="profile"
+               class="shadow rounded-full object-cover image w-full h-full"/>
+        </div>
+        <div class="w-[42px] h-[42px] flex" *ngIf="false">
+          <img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShta_GXR2xdnsxSzj_GTcJHcNykjVKrCBrZ9qouUl0usuJWG2Rpr_PbTDu3sA9auNUH64&usqp=CAU"
+            alt="profile" class="shadow rounded-full object-cover"/>
+        </div>
+      </div>
+
+      <div class="hidden md:block text-start cursor-pointer" *ngIf="!isEditorRoute()" (click)="editProfile()">
+        <div class="text-sm text-[#262626] font-bold capitalize">{{name + " " + lastName}}</div>
+        <div class="text-xs text-[#727272] font-base capitalize">Team Creator</div>
+      </div>
+    </div>
+    <!-- <button (click)="logout()" *ngIf="!isEditorRoute()"
+            class=" py-3 px-6 font-base text-sm bg-[#01BDA3] rounded-md inline-flex  items-center justify-center"
+          >
+            <span class="text-white">Log out</span>
+          </button> -->
+    <button *ngIf="isEditorRoute()" (click)="shareClick()"
+            class=" py-3 px-6 font-base bg-[#5B61F3] rounded-md inline-flex  items-center justify-center">
+      <span class="text-white font-medium text-sm">Share</span>
+    </button>
+    <button *ngIf="isEditorRoute()" (click)="editClick()"
+            class="ml-2 py-3 px-6   bg-[#F6F8FF] rounded-md inline-flex  items-center justify-center">
+      <span class="text-[#5B61F3] font-medium text-sm">Edit</span>
+    </button>
+
+  </div>
+</div>

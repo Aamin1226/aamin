@@ -1,0 +1,114 @@
+<div class="modal-container settings-modal flex justify-center items-center fixed top-0 right-0 bottom-0 left-0">
+  <div class="modal w-1/2 h-1/2 flex rounded-lg">
+    <div class="flex flex-col w-1/4 bg-[#F0F1FF] pl-11 space-y-4 side-menu">
+      <div class="mt-11 cursor-pointer flex " (click)="menuOptions = 'general'">
+        <div class="flex py-1">
+
+          <img src="assets/dashboardicons/doc-active.svg" *ngIf="menuOptions == 'general'">
+          <img src="assets/dashboardicons/doc.svg" *ngIf="menuOptions !== 'general'">
+          <div class="ml-3  text-base" [ngClass]="menuOptions == 'general'?'text-[#192339]':'text-[#9196A2]'">General
+          </div>
+        </div>
+        <div class="bg-[#5B61F3] h-full w-[6px] active-bar ml-auto" *ngIf="menuOptions == 'general'"></div>
+      </div>
+      <div class="cursor-pointer flex" (click)="menuOptions = 'scribe'">
+        <div class="flex py-1">
+
+          <img src="assets/dashboardicons/group-active.svg" *ngIf="menuOptions == 'scribe'">
+          <img src="assets/dashboardicons/group.svg" *ngIf="menuOptions !== 'scribe'">
+          <div class="ml-3 text-base" [ngClass]="menuOptions == 'scribe'?'text-[#192339]':'text-[#9196A2]'">Kopist</div>
+        </div>
+        <div class="bg-[#5B61F3] h-full w-[6px] active-bar ml-auto" *ngIf="menuOptions == 'scribe'"></div>
+      </div>
+      <!-- <div class="cursor-pointer flex">
+
+          <img src="assets/dashboardicons/adduser.svg">
+          <div class="ml-3 text-[#9196A2] text-base">Users</div>
+
+      </div>
+      <div class="cursor-pointer flex">
+
+          <img src="assets/dashboardicons/doc.svg">
+          <div class="ml-3 text-[#9196A2] text-base">Billing</div>
+
+      </div> -->
+    </div>
+    <div class=" bg-white px-16 pb-14 py-10 flex flex-col items-center w-3/4 main-settings"
+         *ngIf="menuOptions == 'general'">
+      <div class="flex mr-auto">
+        <div class="text-xl font-semibold text-[#192339]">
+          Workspace Settings
+        </div>
+      </div>
+
+      <div [formGroup]="updateTeamForm" class="flex flex-col mr-auto w-full mb-3 mt-7">
+        <label class="text-sm font-normal mb-1 ml-2 text-[#03014]" for="team">Team Name</label>
+        <input formControlName="team_name"
+               class="border border-[#D9D9D9] rounded-md h-10 placeholder:text-xs pl-3 placeholder:text-[#192339] focus:outline-none"
+               type="text" name="" id="">
+        <!-- <span *ngIf="updateTeamForm.controls['team_name'].invalid  && (updateTeamForm.controls['team_name'].dirty || updateTeamForm.controls['team_name'].touched)" class="error-text">Please enter valid team name!</span> -->
+        <div
+          class="error-text items-center flex w-full bg-[#FFEEEE] text-[#BE4B49] text-xs py-1 pl-4 border-t border-[#BE4B49]"
+          *ngIf="updateTeamForm.controls['team_name'].invalid  && (updateTeamForm.controls['team_name'].dirty || updateTeamForm.controls['team_name'].touched)">
+          <img src="assets/authicons/error-icon.svg" alt="e">
+          <span class="text-[#BE4B49] text-xs ml-2">Please enter valid team name!
+          </span>
+        </div>
+      </div>
+
+
+      <div class="flex space-x-3 mt-4 w-full mt-auto">
+        <button class="px-8 py-2 bg-white rounded-md inline-flex items-center justify-center ml-auto border"
+                (click)="closeModal()">
+          <span class="text-[#727272] font-base text-sm">Cancel</span>
+        </button>
+        <button [disabled]="updateTeamForm.invalid" (click)="updateTeam()"
+                class="px-8 py-2 bg-[#586AF6] rounded-md inline-flex items-center justify-center ml-auto">
+          <span class="text-white font-base text-sm">Update</span>
+        </button>
+      </div>
+
+    </div>
+
+    <div class=" bg-white px-16 pb-14 py-10 flex flex-col items-center w-3/4 main-settings"
+         *ngIf="menuOptions == 'scribe'">
+      <div class="flex mr-auto">
+        <div class="text-xl font-semibold text-[#192339]">
+          Kopist Settings
+        </div>
+      </div>
+
+      <div class="flex flex-col mr-auto w-full mt-7">
+        <label class="text-sm font-normal mb-2 text-[#192339]" for="team">Comments Enabled By Default For
+          Teammates</label>
+        <div class="flex items-center">
+          <input type="checkbox" [checked]="teamSetting" (change)="teammateSettingChange($event)"
+                 class="appearance-none w-10 border-[#141414] checked:border-[#5B61F3] border-[2px] focus:outline-none h-6 bg-white rounded-full before:inline-block before:rounded-full before:bg-[#141414] checked:before:bg-[#5B61F3] before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:mt-0.5"/>
+          <div class="ml-3 text-[#192339] text-sm font-normal">{{teamSetting ? 'Enabled' : 'Disabled'}}</div>
+        </div>
+      </div>
+      <div class="flex flex-col mr-auto w-full mb-3 mt-7">
+        <label class="text-sm font-normal mb-2 text-[#192339]" for="team">Comments Enabled By Default For
+          Everyone</label>
+        <div class="flex items-center">
+          <input type="checkbox" [checked]="everyOneSetting" (change)="everyOneSettingChange($event)"
+                 class="appearance-none w-10 border-[#141414] checked:border-[#5B61F3] border-[2px] focus:outline-none h-6 bg-white rounded-full before:inline-block before:rounded-full before:bg-[#141414] checked:before:bg-[#5B61F3] before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:mt-0.5"/>
+          <div class="ml-3 text-[#192339] text-sm font-normal">{{everyOneSetting ? 'Enabled' : 'Disabled'}}</div>
+        </div>
+      </div>
+
+
+      <div class="flex space-x-3 mt-4 w-full mt-auto">
+        <button class="px-8 py-2 bg-white rounded-md inline-flex items-center justify-center ml-auto border"
+                (click)="closeModal()">
+          <span class="text-[#727272] font-base text-sm">Cancel</span>
+        </button>
+        <button class="px-8 py-2 bg-[#586AF6] rounded-md inline-flex items-center justify-center ml-auto"
+                (click)="changeTeamSetting()">
+          <span class="text-white font-base text-sm">Update</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

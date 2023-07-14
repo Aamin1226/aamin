@@ -1,0 +1,533 @@
+<app-share [usersList]="documentData.doument_users" [documentId]="documentData.id" [documentSlug]="documentData?.slug" *ngIf="shareDialogue"></app-share>
+<app-comment [docId]="documentId" *ngIf="commentDialogue"></app-comment>
+<app-move-document [docId]="documentId" *ngIf="moveTeamDialogue"></app-move-document>
+<div id="pdfContent" #pdfContent *ngIf="previewEditor" class="flex flex-row"
+     [ngClass]="(editor || chatBox)?'ml-[-160px]': ''">
+  <div class='flex items-center min-h-screen flex-col space-y-20 mt-44 '
+       [ngClass]="(editor || chatBox)?'w-4/5': 'w-full'">
+    <div class="rounded-md p-5 w-9/12 bg-white editor-card" [ngClass]="(editor || chatBox)?'!pb-12': ''">
+      <div class="flex w-full justify-center items-center pb-3 -mt-14">
+        <div class="h-20 w-20 rounded-full bg-[#F0F1FF] flex items-center space-x-3 justify-center">
+          <div *ngIf="!documentData?.icon" class="text-6xl font-semibold text-[#5B51EF]">{{documentData?.name[0]}}</div>
+          <img *ngIf="documentData?.icon" class="w-9 h-9" src="{{documentData?.icon}}" alt="favicon">
+        </div>
+      </div>
+
+
+      <div class="mb-6 flex justify-center">
+        <button *ngIf="!editTitle" class="mb-3 text-xl font-bold break-all" [disabled]="!editor"
+                (click)="editTitle = true">{{documentData?.name}}</button>
+                <textarea class="text-xl font-bold p-3 rounded-lg h-14 focus:outline-none bg-[#F0F1FF] w-[70%]" name="" id="" type="text"
+                        *ngIf="editTitle" [(ngModel)]="documentData.name" (keyup.enter)="editTitle = false;" (blur)="editTitle = false;updateDocument(documentData?.id,documentData?.name)" autofocus
+                       ></textarea>
+<!--        <input class="text-xl font-bold p-3 rounded-lg h-12 focus:outline-none bg-[#F0F1FF] w-[40%]" type="text"-->
+<!--               name="title" id="title" *ngIf="editTitle" [(ngModel)]="documentData.name"-->
+<!--               (keyup.enter)="editTitle = false;"-->
+<!--               (blur)="editTitle = false;updateDocument(documentData?.id,documentData?.name)" autofocus>-->
+      </div>
+
+      <div>
+        <div class="flex items-center justify-around text-slate-500 space-x-2">
+          <div class="flex space-x-4 md:space-x-8 ">
+            <div
+              class="flex h-11 bg-[#F0F1FF] px-8 tall:px-8 lg:px-16 py-3 cursor-pointer items-center transition text-[#262626] font-medium text-sm">
+              {{documentData?.doument_steps.length
+              }} Steps
+            </div>
+          </div>
+          <div class="flex space-x-4 md:space-x-8 ">
+            <div
+              class="flex h-11 bg-[#F0F1FF] px-8 lg:px-16 tall:px-8 py-3 cursor-pointer items-center transition text-[#262626] font-medium text-sm">
+              {{documentData?.created_at
+              | dateAgo}}
+            </div>
+          </div>
+          <div class="flex space-x-4 md:space-x-8 ">
+            <div
+              class="flex h-11 bg-[#F0F1FF] px-8 lg:px-16 tall:px-8 py-3 cursor-pointer items-center transition text-[#262626] font-medium text-sm">
+              Created by {{getOwnerName(documentData?.doument_users)}}
+            </div>
+          </div>
+          <div class="flex space-x-4 md:space-x-8 ">
+            <div
+              class="flex h-11 bg-[#F0F1FF] px-8 lg:px-16 tall:px-8 py-3 cursor-pointer items-center transition text-[#262626] font-medium text-sm">
+              {{documentData?.reactions.length}} Reaction
+            </div>
+          </div>
+
+        </div>
+
+
+      </div>
+    </div>
+    <!-- <div class="w-14 h-14 flex justify-center items-center bg-[#5B61F3] rounded-full !-mt-7 z-10" *ngIf="editor"
+      (click)="initialStepToolbar = !initialStepToolbar;stepToolbar = false">
+      <span class="text-white text-3xl font-medium" *ngIf="!initialStepToolbar">+</span>
+      <img src="assets/editoricons/cross.svg" alt="close" *ngIf="initialStepToolbar">
+    </div> -->
+    <div class="flex w-9/12 items-center" *ngIf="editor">
+      <hr class="w-full mr-2">
+      <div class="ml-auto flex cursor-pointer" (click)="initialStepToolbar = !initialStepToolbar;stepToolbar = false">
+        <img src="assets/editoricons/add-step.svg" alt="" *ngIf="!initialStepToolbar">
+        <img src="assets/editoricons/close-step.svg" alt="" *ngIf="initialStepToolbar">
+        <div class="text-[#727272] text-sm font-medium ml-2">{{!initialStepToolbar ? 'Add' : 'Close'}}</div>
+      </div>
+    </div>
+
+    <div class="rounded-md py-8 px-12 w-auto bg-white editor-card !mt-1" *ngIf="initialStepToolbar && editor">
+      <div class="flex items-center justify-around">
+        <div class="flex space-x-4 md:space-x-24 ">
+          <div class="flex flex-col items-center">
+            <div class="bg-[#F0F1FF] w-14 h-14 rounded-full flex justify-center items-center cursor-pointer"
+                 (click)="addStep(0)">
+              <img src="assets/editoricons/add_step.svg" alt="add">
+
+            </div>
+            <div class="text-[#192339] font-medium text-sm mt-2">Step</div>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="bg-[#F0F1FF] w-14 h-14 rounded-full flex justify-center items-center cursor-pointer"
+                 (click)="addStep(0,'Tip')">
+              <img src="assets/editoricons/tip.svg" alt="Tip">
+
+            </div>
+            <div class="text-[#192339] font-medium text-sm mt-2">Tip</div>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="bg-[#F0F1FF] w-14 h-14 rounded-full flex justify-center items-center cursor-pointer"
+                 (click)="addStep(0,'Alert')">
+              <img src="assets/editoricons/alert.svg" alt="Alert">
+
+            </div>
+            <div class="text-[#192339] font-medium text-sm mt-2">Alert</div>
+          </div>
+          <!-- <div class="flex flex-col items-center">
+                      <div class="bg-[#F0F1FF] w-14 h-14 rounded-full flex justify-center items-center">
+                        <img src="assets/editoricons/record.svg" alt="record" >
+
+                      </div>
+                      <div class="text-[#192339] font-medium text-sm">Record</div>
+                    </div> -->
+          <div class="flex flex-col items-center">
+            <div class="bg-[#F0F1FF] w-14 h-14 rounded-full flex justify-center items-center cursor-pointer"
+                 (click)="addStep(0,'Header')">
+              <span class="text-[#586AF6] text-3xl font-light">H</span>
+            </div>
+            <div class="text-[#192339] font-medium text-sm mt-2">Header</div>
+          </div>
+          <!-- <div class="flex flex-col items-center">
+        <div class="bg-[#F0F1FF] w-14 h-14 rounded-full flex justify-center items-center">
+          <img src="assets/editoricons/gif.svg" alt="add" >
+
+        </div>
+        <div class="text-[#192339] font-medium text-sm">GIF</div>
+      </div> -->
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngFor="let data of documentData?.doument_steps;let i = index">
+      <div class="rounded-md p-5 w-9/12 editor-card relative" [ngClass]="{
+        'bg-[#FCEDE9] border-b-[6px] border-[#EA4E2C]': data.step_type === 'Alert',
+        'bg-[#EAF7EE] border-b-[5px] border-[#3CB85E]': data.step_type === 'Tip',
+        'bg-none !shadow-none': data.step_type === 'Header',
+        'bg-white border-none': !data?.step_type
+     }">
+        <div class="absolute right-0 bottom-0 p-2 rounded-md z-10 cursor-pointer bg-white" *ngIf="data?.image">
+          <img src="assets/editoricons/preview.svg" alt="preview"
+               (click)="expandView(data?.image,data?.position_x,data?.position_y)">
+        </div>
+
+
+        <div class="flex w-full justify-start items-center pb-3 -mt-10">
+          <div class="h-14 w-14 rounded-full flex items-center space-x-3 justify-center" [ngClass]="{
+            'bg-[#EA4E2C]': data?.step_type === 'Alert',
+            'bg-[#3AB45C]': data?.step_type === 'Tip',
+            'bg-[#5B61F3]': !data?.step_type
+         }">
+            <div class="text-white text-2xl font-medium" *ngIf="!data?.step_type">{{i + 1}}</div>
+            <img src="assets/editoricons/tip-step.svg" alt="" *ngIf="data?.step_type === 'Tip'">
+            <img src="assets/editoricons/tip-step.svg" alt="" *ngIf="data?.step_type === 'Alert'">
+
+          </div>
+        </div>
+
+        <div class=" flex justify-center -mt-7 items-center">
+          <div class="text-base font-semibold text-[#262626] flex-1 text-center" [ngClass]="{
+            'text-[#727272]': data?.step_type === 'Alert',
+            'text-xl': data?.step_type === 'Header'
+         }">
+            <div class="flex justify-center px-20 break-all">
+              <p *ngIf="indexText !== i || !editText" [innerHTML]="data?.name ? addAnchorsToText(data?.name):''">
+
+              </p>
+              <textarea class="p-3 rounded-lg h-12 w-[427px] focus:outline-none" id="textareaRef{{i}}" #textareaRef{{i}}
+                        type="text"
+                        *ngIf="indexText == i && editText" [(ngModel)]="data.name"
+                        (keyup.enter)="editText = false" (blur)="updateStep(i,data?.id,data?.name)" [ngClass]="{
+                  'bg-[#FFCABC]': data.step_type === 'Alert',
+                  'bg-[#9CE3B2]': data.step_type === 'Tip',
+                  'bg-transparent w-auto': data.step_type === 'Header',
+                  'bg-[#F0F1FF]': !data?.step_type
+               }"></textarea>
+              <img *ngIf="editor && !editText" class="ml-2 cursor-pointer mb-auto mt-1" src="assets/editoricons/pen.svg
+                            " alt="edit" (click)="setFocusIndex(i);indexText = i ;editText = !editText">
+            </div>
+          </div>
+          <div class="ml-auto pr-5 relative mb-auto mt-[-2px]" *ngIf="editor && data.step_type !== 'Header'">
+            <img class="mb-6 cursor-pointer " src="assets/editoricons/image-icon.svg" alt="image"
+                 (click)="imageInput.click()">
+            <input class="hidden" #imageInput type="file" accept="image/*"
+                   (change)="updateStep(i,data?.id,undefined,imageInput)">
+          </div>
+          <div class="ml-auto dropdown pr-5 relative mb-auto mt-1">
+            <img class="mb-6 cursor-pointer " src="assets/editoricons/ellipse2.png" alt="options">
+            <ul
+              class="dropdown-menu absolute hidden  py-3 px-2 bg-[white] rounded-[10px] opacity-100 z-10 right-0 top-2 options-menu w-max">
+              <li class="flex py-3 px-2 hover:bg-[#F0F1FF] rounded-lg cursor-pointer" (click)="deleteStep(i,data?.id)">
+                <img src="assets/editoricons/delete-opt.svg" alt="delete">
+                <div class="ml-2 font-medium text-sm whitespace-nowrap text-[#192339]">Delete Step</div>
+              </li>
+              <!-- <li class="flex py-3 px-2 hover:bg-[#F0F1FF] rounded-lg cursor-pointer">
+                <img src="assets/editoricons/copy-step.svg" alt="copy">
+                <div class="ml-2 font-medium text-sm whitespace-nowrap text-[#192339]">Copy Link to Step </div>
+              </li> -->
+              <!-- <li class=""><div class="font-medium text-sm py-2 px-4 block whitespace-nowrap text-[#FFFFFF]"
+                                    >Update Guide Me link </div></li> -->
+              <li class="flex py-3 px-2 hover:bg-[#F0F1FF] rounded-lg cursor-pointer" *ngIf="data?.image && editor"
+                  (click)="editScreenshot(i,data?.id,data?.image)">
+                <img width="18" height="18" src="assets/editoricons/edit_ss.svg" alt="download">
+                <div class="ml-2 font-medium text-sm whitespace-nowrap text-[#192339]">Edit Screenshot</div>
+              </li>
+              <li class="flex py-3 px-2 hover:bg-[#F0F1FF] rounded-lg cursor-pointer" *ngIf="data?.image"
+                  (click)="downloadImage(data?.image)">
+                <img src="assets/editoricons/download-ss.svg" alt="download">
+                <div class="ml-2 font-medium text-sm whitespace-nowrap text-[#192339]">Download Screenshot</div>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+
+        <div *ngIf="data?.image">
+          <div class="flex items-center justify-around text-slate-500">
+            <div class="screenshot-container" (mouseover)="dotHover[i]=true" (mouseout)="dotHover[i]=false">
+              <img *ngIf="download" class="screenshot relative" id="screenshot-{{i}}"
+                   [src]="sanitizer.bypassSecurityTrustUrl(convertBase64ToDataURL(data?.image))"
+                   alt="Image of step of Workflow"
+                   [ngStyle]="{'top.px': (-data?.position_y + 30),'left.px':((data?.imageLeft ? data?.imageLeft  : 0 ))}">
+              <img *ngIf="!download" class="screenshot relative" id="screenshot-{{i}}" src={{data?.image}}
+                   alt="Image of step of Workflow"
+                   [ngStyle]="{'top.px': (-data?.position_y + 120),'left.px':((data?.imageLeft ? data?.imageLeft  : 0 ))}">
+              <!-- <div class="action-area" id="action-area-{{i}}"
+                                [ngStyle]="{'top.px': (dotHover[i] ? 5 : 10),'left.px':((data?.imageLeft ? data?.dotLeft :  data?.dotLeft + 44  ) - (dotHover[i]?5:0)),'width.px': (dotHover[i] ? 55 : 44),'height.px': (dotHover[i] ? 55 : 44)}"></div> -->
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+      <div class="flex w-9/12 items-center" *ngIf="editor">
+        <hr class="w-full mr-2">
+        <div class="ml-auto flex cursor-pointer"
+             (click)="index = i;stepToolbar = !stepToolbar;initialStepToolbar = false ">
+          <img src="assets/editoricons/add-step.svg" alt="" *ngIf="i !== index || !stepToolbar">
+          <img src="assets/editoricons/close-step.svg" alt="" *ngIf="i == index && stepToolbar">
+          <div class="text-[#727272] text-sm font-medium ml-2">{{i !== index || !stepToolbar ? 'Add' : 'Close'}}</div>
+        </div>
+      </div>
+
+      <!-- <div class="w-14 h-14 flex justify-center items-center bg-[#5B61F3] rounded-full !-mt-7 z-10" *ngIf="editor"
+        (click)="index = i;stepToolbar = !stepToolbar;initialStepToolbar = false ">
+        <span class="text-white text-3xl font-medium" *ngIf="i !== index || !stepToolbar">+</span>
+        <img src="assets/editoricons/cross.svg" alt="close" *ngIf="i == index && stepToolbar">
+      </div> -->
+
+      <div class="rounded-md py-8 px-12 w-auto  bg-white editor-card !mt-1" *ngIf="i == index && editor && stepToolbar"
+           [ngClass]="{'fade-in': i == index && editor && stepToolbar}">
+        <div class="flex items-center justify-around">
+          <div class="flex space-x-24">
+            <div class="flex flex-col items-center">
+              <div class="bg-[#F0F1FF] w-14 h-14 rounded-full flex justify-center items-center cursor-pointer">
+                <img src="assets/editoricons/add_step.svg" alt="add" (click)="addStep(i+1)">
+
+              </div>
+              <div class="text-[#192339] font-medium text-sm mt-2">Step</div>
+            </div>
+            <div class="flex flex-col items-center">
+              <div class="bg-[#F0F1FF] w-14 h-14 rounded-full flex justify-center items-center cursor-pointer"
+                   (click)="addStep(i+1,'Tip')">
+                <img src="assets/editoricons/tip.svg" alt="Tip">
+
+              </div>
+              <div class="text-[#192339] font-medium text-sm mt-2">Tip</div>
+            </div>
+            <div class="flex flex-col items-center">
+              <div class="bg-[#F0F1FF] w-14 h-14 rounded-full flex justify-center items-center cursor-pointer"
+                   (click)="addStep(i+1,'Alert')">
+                <img src="assets/editoricons/alert.svg" alt="Alert">
+
+              </div>
+              <div class="text-[#192339] font-medium text-sm mt-2">Alert</div>
+            </div>
+            <!-- <div class="flex flex-col items-center">
+                          <div class="bg-[#F0F1FF] w-14 h-14 rounded-full flex justify-center items-center">
+                            <img src="assets/editoricons/record.svg" alt="record" >
+
+                          </div>
+                          <div class="text-[#192339] font-medium text-sm">Record</div>
+                        </div> -->
+            <div class="flex flex-col items-center">
+              <div class="bg-[#F0F1FF] w-14 h-14 rounded-full flex justify-center items-center cursor-pointer"
+                   (click)="addStep(i+1,'Header')">
+                <span class="text-[#586AF6] text-3xl font-light">H</span>
+              </div>
+              <div class="text-[#192339] font-medium text-sm mt-2">Header</div>
+            </div>
+            <!-- <div class="flex flex-col items-center">
+          <div class="bg-[#F0F1FF] w-14 h-14 rounded-full flex justify-center items-center">
+            <img src="assets/editoricons/gif.svg" alt="add" >
+
+          </div>
+          <div class="text-[#192339] font-medium text-sm">GIF</div>
+        </div> -->
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  <div class="bg-white rounded-xl px-4 w-1/5 mt-28 h-fit pb-8 sticky top-32" *ngIf="editor"
+       [ngClass]="{'fade-in': editor}">
+    <!-- <div class="bg-[#F0F1FF] rounded p-4 w-100 mt-7 flex">
+            <img class="pr-2" src="assets/editoricons/share.svg" alt="share">
+            <div class="text-[#192339] text-sm font-normal">Share</div>
+            <img class="ml-auto" src="assets/editoricons/right_arrow.svg" alt="arrow">
+        </div> -->
+    <div class=" rounded p-4 w-100 mt-7 flex cursor-pointer" (click)="editorSubFolder = !editorSubFolder"
+         [ngClass]="editorSubFolder?'!bg-[#F0F1FF]':'bg-[#F0F1FF]'">
+      <img class="pr-2" src="assets/editoricons/doc.svg" alt="doc">
+      <div class="text-[#192339] text-sm font-normal">Document Actions</div>
+      <img class="ml-auto" src="assets/editoricons/down_arrow.svg" alt="arrow" *ngIf="editorSubFolder">
+      <img class="ml-auto" src="assets/editoricons/right_arrow.svg" alt="arrow" *ngIf="!editorSubFolder">
+    </div>
+    <div class="bg-[#F0F1FF] rounded p-4 w-100 mt-7 flex" *ngIf="editorSubFolder">
+
+      <ul>
+        <!-- <li class="flex p-5">
+                    <img class="pr-2" src="assets/editoricons/collab.svg" alt="Add">
+                    <div class="text-white text-sm font-normal">Add to Page</div>
+                </li> -->
+        <li class="flex p-5 cursor-pointer" (click)="duplicateDocument(documentData?.id)">
+          <img class="pr-2" src="assets/editoricons/collab.svg" alt="Duplicate">
+          <div class="text-[#192339] text-sm font-normal">Duplicate</div>
+        </li>
+        <li class="flex p-5 cursor-pointer" (click)="moveTeamDialogue = !moveTeamDialogue;">
+          <img class="pr-2" src="assets/editoricons/collab.svg" alt="Move">
+          <div class="text-[#192339] text-sm font-normal">Move to a Team</div>
+        </li>
+        <!-- <li class="flex p-5">
+                    <img class="pr-2" src="assets/editoricons/collab.svg" alt="Duplicate">
+                    <div class="text-white text-sm font-normal">Duplicate to a Team</div>
+                </li> -->
+        <li class="flex p-5 cursor-pointer" (click)="deleteDocuments(documentData?.id)">
+          <img class="pr-2" src="assets/editoricons/collab.svg" alt="Delete">
+          <div class="text-[#192339] text-sm font-normal">Delete Kopist</div>
+        </li>
+      </ul>
+
+    </div>
+    <!-- <div class="bg-[#27314B] rounded shadow p-4 w-100 mt-7 flex">
+            <img class="pr-2" src="assets/editoricons/step_action.svg" alt="step_action">
+            <div class="text-white text-sm font-normal">Step Actions</div>
+            <img class="ml-auto" src="assets/editoricons/right_arrow.svg" alt="arrow">
+        </div> -->
+    <!-- <div class="bg-[#27314B] rounded shadow p-4 w-100 mt-7 flex">
+            <img class="pr-2" src="assets/editoricons/customize.svg" alt="customize">
+            <div class="text-white text-sm font-normal">Customization</div>
+            <img class="ml-auto" src="assets/editoricons/right_arrow.svg" alt="arrow">
+        </div> -->
+    <!-- <div class="bg-[#27314B] rounded shadow p-4 w-100 mt-7 flex">
+            <img class="pr-2" src="assets/editoricons/collab.svg" alt="collab">
+            <div class="text-white text-sm font-normal">Collaboration</div>
+            <img class="ml-auto" src="assets/editoricons/right_arrow.svg" alt="arrow">
+        </div> -->
+    <div class="bg-[#F0F1FF] rounded p-4 w-100 mt-7 flex cursor-pointer" (click)="StatsSubMenu = !StatsSubMenu">
+      <img class="pr-2" src="assets/editoricons/state_info.svg" alt="state_info">
+      <div class="text-[##192339] text-sm font-normal">State & Info</div>
+      <img class="ml-auto" src="assets/editoricons/down_arrow.svg" alt="arrow" *ngIf="StatsSubMenu">
+      <img class="ml-auto" src="assets/editoricons/right_arrow.svg" alt="arrow" *ngIf="!StatsSubMenu">
+    </div>
+    <div class="bg-[#F0F1FF] rounded p-4 w-100 mt-7 flex" *ngIf="StatsSubMenu">
+
+      <ul class="w-full">
+        <li class="flex p-5">
+          <div class="text-[#192339] text-sm font-normal">Created</div>
+          <div class="text-[#192339] text-sm font-normal ml-auto">{{documentData?.created_at | date:'mediumDate'}}</div>
+        </li>
+        <li class="flex p-5">
+          <div class="text-[#192339] text-sm font-normal">Last Updated</div>
+          <div class="text-[#192339] text-sm font-normal ml-auto">{{documentData?.updated_at | date:'mediumDate'}}</div>
+        </li>
+        <!-- <li class="flex p-5">
+                  <div class="text-[#192339] text-sm font-normal">Last Edited By</div>
+              </li> -->
+        <li class="flex p-5">
+          <div class="text-[#192339] text-sm font-normal">Views</div>
+          <div class="text-[#192339] text-sm font-normal ml-auto">{{documentData?.views}}</div>
+        </li>
+        <li class="flex p-5">
+          <div class="text-[#192339] text-sm font-normal">Comments</div>
+          <div class="text-[#192339] text-sm font-normal ml-auto">{{documentData?.comments.length}}</div>
+        </li>
+        <li class="flex p-5">
+          <div class="text-[#192339] text-sm font-normal">Total Steps</div>
+          <div class="text-[#192339] text-sm font-normal ml-auto">{{documentData?.doument_steps.length}}</div>
+        </li>
+      </ul>
+
+    </div>
+
+  </div>
+  <div class="bg-white rounded-lg px-5 w-1/5 mt-28 h-fit py-8 sticky top-32 max-h-[50vh] overflow-auto" *ngIf="chatBox"
+       [ngClass]="{'fade-in': chatBox}">
+    <div class="flex justify-around pb-5">
+      <div class="rounded-lg px-8 py-3 bg-[#F6F8FF] cursor-pointer flex"
+           [ngClass]="{'active-reaction' : reactionsMenu == 'comment'} " (click)="reactionsMenu = 'comment'">
+        <img src="assets/editoricons/chat-icon.svg" alt="">
+      </div>
+      <div class="rounded-lg px-8 py-3 bg-[#F6F8FF] cursor-pointer flex" (click)="reactionsMenu = 'reaction';countreactionOccurrences()"
+           [ngClass]="{'active-reaction' :  reactionsMenu !== 'comment'} ">
+        <img src="assets/editoricons/reactions/heart (3) 2.svg" alt="">
+      </div>
+    </div>
+    <hr class="divider-chat">
+    <div class="flex flex-col pt-5" *ngIf="reactionsMenu == 'comment'">
+      <div class="text-lg text-[#192339] font-medium">Feedback</div>
+      <div class="flex my-7" *ngFor="let comments of this.documentData?.comments">
+        <div class="flex-none flex justify-center">
+          <div class="w-9 h-9 flex bg-[#FAF0FF] justify-center items-center rounded-full"
+               *ngIf="true">
+            <div *ngIf="!comments?.user?.image"
+                 class="font-bold text-sm text-[#8842A1] uppercase">
+              {{comments?.user?.first_name[0] + comments?.user?.last_name[0]}}</div>
+            <img *ngIf="comments?.user?.image" src="{{comments?.user?.image}}" alt="profile"
+                 class="shadow rounded-full object-cover image w-full h-full"/>
+          </div>
+        </div>
+
+        <div
+          class="hidden md:block text-start ml-3">
+          <div class="text-sm text-[#192339] font-medium capitalize">
+            {{comments?.user?.first_name}}  {{comments?.user?.last_name}} </div>
+          <div class="text-xs text-[#9196A2] font-base">{{comments?.description}}</div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col pt-5" *ngIf=" reactionsMenu !== 'comment'">
+      <div class="text-lg text-[#192339] font-medium">Reactions</div>
+      <div class="flex justify-around  flex-wrap">
+        <div class="rounded-full w-14 h-14 flex justify-center items-center bg-[#F6F8FF] mt-3 mr-0 relative"
+             *ngFor="let data of reactionOccurrences;let i = index">
+          <span
+            class="w-5 h-5 bg-[#5B61F3] rounded-full absolute right-0 top-0 flex justify-center items-center text-xs text-white font-semibold">{{data?.count}}</span>
+          <img width="24" height="24" src="{{data?.image}}" alt="">
+        </div>
+
+      </div>
+      <div class="flex my-3" *ngFor="let reactions of this.documentData?.reactions">
+        <div class="flex justify-center items-center w-full">
+
+          <div class="w-9 h-9 flex bg-[#FAF0FF] justify-center items-center rounded-full"
+               *ngIf="true">
+            <div *ngIf="!reactions?.user?.image"
+                 class="font-bold text-sm text-[#8842A1] uppercase">
+              {{reactions?.user?.first_name[0] + reactions?.user?.last_name[0]}}</div>
+            <img *ngIf="reactions?.user?.image" src="{{reactions?.user?.image}}" alt="profile"
+                 class="shadow rounded-full object-cover image w-full h-full"/>
+          </div>
+          <div
+            class="hidden md:block ml-3">
+            <div class="text-sm text-[#192339] font-medium capitalize">
+              {{reactions?.user?.first_name}}  {{reactions?.user?.last_name}}</div>
+
+          </div>
+          <img width="24" height="24" class="ml-auto" src="{{reactions?.emoji?.image}}" alt="">
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+
+  <div
+    class="reaction-container h-fit fixed bottom-7 right-7 flex flex-col space-y-5 px-3  rounded-full bg-white justify-center items-center"
+    *ngIf="!editor" [ngClass]="reactionMenu?'py-4':'py-2'">
+    <ng-container *ngIf="reactionMenu">
+      <div class="rounded-full bg-[#EAEEFF] p-2" (click)="reactOnDoc(emoji.id)" *ngFor="let emoji of reactions">
+        <img width="24" height="24" class="cursor-pointer" src="{{emoji?.image}}" alt="reaction">
+      </div>
+    </ng-container>
+
+    <div class="rounded-full bg-[#EAEEFF] p-2" *ngIf="reactionMenu" (click)="commentDialogue = true">
+      <img class="cursor-pointer" src="assets/editoricons/reactions/comment (1).svg" alt="comment">
+    </div>
+
+    <img class="cursor-pointer" src="assets/editoricons/reactions/reaction-comm.svg" alt="menu"
+         (click)="reactionMenu = !reactionMenu">
+
+
+    <!-- <img class="cursor-pointer opacity-50" src="assets/editoricons/reactions/clapping.png" alt="clapping">
+    <img class="cursor-pointer opacity-50" src="assets/editoricons/reactions/like.png" alt="like">
+    <img class="cursor-pointer opacity-50" src="assets/editoricons/reactions/astonished.png"
+      alt="astonished">
+    <img class="cursor-pointer opacity-50" src="assets/editoricons/reactions/diamond.png" alt="diamond"> -->
+  </div>
+
+</div>
+
+
+<div *ngIf="false" class="w-full hidden">
+
+  <!-- <img
+      class="screenshot relative m-auto"
+      id="image-expanded"
+      [src]="previewImage"
+      alt="Image of step of Workflow"
+    />
+    <div
+      class="action-area"
+      [ngStyle]="{ 'top.px': actionPosition.y, 'left.px': actionPosition.x }"
+    ></div> -->
+</div>
+
+
+<div *ngIf="previewModal"
+     class="modal-container invite-modal flex justify-center items-center fixed top-0 right-0 bottom-0 left-0">
+  <div
+    class="modal bg-white px-16 pb-14 pt-6 rounded-md flex flex-col items-center w-11/12 min-w-11/12 h-5/6 max-h-5/6 min-h-5/6">
+    <div class="flex w-full ml-20">
+      <img (click)="closeModal()" class="ml-auto pb-5 cursor-pointer" src="assets/team/cross.svg"
+           alt="close">
+    </div>
+    <!-- <div class="flex">
+  <img
+    class="pr-2"
+    src="https://kopist-zehntech.s3.ap-south-1.amazonaws.com/images/1683882009.forget-pass.png"
+    alt="preview"
+  />
+</div> -->
+    <div class="relative w-full max-w-full min-w-full h-full max-h-full min-h-full">
+      <img class="relative w-full max-w-full min-w-full h-full max-h-full min-h-full object-fill" id="image-expanded"
+           [src]="previewImage" alt="Image of step of Workflow">
+      <!-- <div class="action-area" [ngStyle]="{'top.px': actionPosition.y,'left.px':actionPosition.x}"></div>  -->
+    </div>
+
+  </div>
+</div>
+<div *ngIf="editModal" id="kopistEditor">
+
+</div>

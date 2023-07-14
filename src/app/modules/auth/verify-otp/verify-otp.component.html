@@ -1,0 +1,97 @@
+<div class="h-screen flex" *ngIf="validCode">
+  <img class=" fixed top-12 tall:top-4 left-12 object-cover w-[119px] h-[30px]" src="assets/kopist-logo.svg"
+       alt="logo"/>
+  <div class="w-full lg:w-1/2 bg-white flex items-center justify-center p-8">
+    <div class="w-full lg:w-8/12 m-auto">
+      <h1 class="tall:text-3xl text-5xl font-semibold pb-6">Reset Password</h1>
+      <div class="mt-16"></div>
+      <form action="" class="my-10" [formGroup]="verifyPasswordCodeForm">
+        <div class="flex flex-col space-y-10">
+          <!-- <label for="password">
+            <p class="opacity-50 text-sm font-normal">Code</p>
+            <div class="relative">
+              <input readonly
+                formControlName="code"
+                id="code"
+                name="code"
+                type="text"
+                class="w-full py-3 border-b border-[#192339]-200 focus:outline-none placeholder:opacity-50 placeholder:text-xl placeholder:font-semibold placeholder:text-[#192339]"
+                placeholder="Enter your Code"
+              />
+            </div>
+          </label> -->
+
+          <label for="password">
+            <p class="opacity-50 text-sm font-normal">Password</p>
+            <div class="relative">
+              <input formControlName="password" id="password" name="password" [type]="password"
+                     class="w-full py-3 border-b border-[#192339]-200 focus:outline-none placeholder:opacity-50 placeholder:text-xl placeholder:font-semibold placeholder:text-[#192339]"
+                     placeholder="Enter password"/>
+              <div (click)="handleShowPassword()">
+                <img *ngIf="showPassword" class="absolute right-0 top-2" src="assets/authicons/eye-show.svg"
+                     alt="eye">
+                <img *ngIf="!showPassword" class="absolute right-0 top-2"
+                     src="assets/authicons/eye-hide.svg" alt="eye">
+              </div>
+              <!-- <span
+                    *ngIf="verifyPasswordCodeForm.controls['password'].invalid  && (verifyPasswordCodeForm.controls['password'].dirty || verifyPasswordCodeForm.controls['password'].touched)"
+                    class="error-text"
+                    >Please enter your password!
+                  </span> -->
+
+              <div
+                class="error-text items-center flex left-0 bottom-[-24px] w-full bg-[#FFEEEE] text-[#BE4B49] text-xs py-1 pl-4 border-t border-[#BE4B49]"
+                *ngIf="verifyPasswordCodeForm.get('password')!.hasError('passwordStrength')">
+                <img src="assets/authicons/error-icon.svg" alt="e">
+                <span class="text-[#BE4B49] text-xs ml-2"> Password must contain at least two of the following: numbers,
+                  lowercase letters, uppercase letters, or special characters.
+                </span>
+              </div>
+            </div>
+          </label>
+          <label for="Confirm Password" class="relative">
+            <p class="opacity-50 text-sm font-normal">Confirm Password</p>
+            <div class="relative">
+              <input formControlName="confirm_password" id="confirm_password" name="confirm_password"
+                     [type]="confirmPassword"
+                     class="w-full py-3 border-b border-[#192339]-200  focus:outline-none placeholder:opacity-50 placeholder:text-xl placeholder:font-semibold placeholder:text-[#192339]"
+                     placeholder="Enter confirm password"
+                     [ngClass]="verifyPasswordCodeForm.controls['confirm_password'].invalid  && (verifyPasswordCodeForm.controls['confirm_password'].dirty || verifyPasswordCodeForm.controls['confirm_password'].touched) ? 'placeholder:text-[#BE4B49]':'placeholder:text-[#192339]'">
+              <div (click)="handleShowConfirmPassword()">
+                <img *ngIf="showConfirmPassword" class="absolute right-0 top-2"
+                     src="assets/authicons/eye-show.svg" alt="eye">
+                <img *ngIf="!showConfirmPassword" class="absolute right-0 top-2"
+                     src="assets/authicons/eye-hide.svg" alt="eye">
+              </div>
+              <div
+                class="error-text absolute items-center flex left-0 bottom-[-24px] w-full bg-[#FFEEEE] text-[#BE4B49] text-xs py-1 pl-4 border-t border-[#BE4B49]"
+                *ngIf="verifyPasswordCodeForm.get('confirm_password')?.hasError('matching') && (verifyPasswordCodeForm.get('confirm_password')?.dirty || verifyPasswordCodeForm.get('confirm_password')?.touched)">
+                <img src="assets/authicons/error-icon.svg" alt="e">
+                <span class="text-[#BE4B49] text-xs ml-2"> Please enter correct password!
+                </span>
+              </div>
+            </div>
+
+          </label>
+
+          <!-- <button
+            (click)="onSubmit()"
+            class="w-full py-5 font-semibold text-xl bg-[#01BDA3] rounded-lg inline-flex space-x-2 items-center justify-center"
+          >
+            <span class="text-white">Reset Password</span>
+          </button> -->
+          <button [disabled]="verifyPasswordCodeForm.invalid"
+            class="w-full py-5 font-semibold text-lg  bg-[#586AF6] rounded-lg  inline-flex space-x-2 items-center justify-center"
+            (click)="onSubmit()">
+
+            <span class="text-white">Reset Password</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="hidden lg:flex w-full lg:w-1/2 justify-around items-center overflow-hidden">
+    <img class="min-w-full max-h-full min-h-full object-fill" src="assets/authimages/register.png" alt=""
+         srcset=""/>
+  </div>
+</div>

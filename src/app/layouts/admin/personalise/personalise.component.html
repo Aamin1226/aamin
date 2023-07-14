@@ -1,0 +1,213 @@
+<div class="modal-container flex justify-center items-center fixed top-0 right-0 bottom-0 left-0">
+  <div class="modal bg-white px-16 py-14 rounded-md flex flex-col items-center" *ngIf="isWhatBringsYou">
+    <div class="flex">
+      <img class="pr-2" src="assets/authicons/emoji.png" alt="emoji"/>
+      <div class="text-2xl font-bold text-[#192339]">
+        Let’s Personalize Your Experience!
+      </div>
+    </div>
+    <div class="text-black text-base pb-12 mr-auto pl-9 opacity-50 mt-2">
+      What bring’s you to Kopist?
+    </div>
+    <div class="flex space-x-5 mb-3">
+      <div *ngFor="let data of personalizeData[0]?.answers"
+           class="rounded flex flex-col items-center border  py-4 w-52 max-w-52"
+           [ngClass]="data?.id == whatBringsYou ? 'border-[#5B61F3]':'border-[#D9D9D9]'">
+        <div class="ml-auto pr-4">
+          <input [checked]="data?.id == whatBringsYou" [value]="data?.id" (change)="whatBringsYouEvent($event,1)"
+                 type="radio" name="whatBrings" class="kopist-radio" id=""/>
+        </div>
+        <img class="pb-7" src="{{data?.image}}" alt="Work"/>
+        <div class="text-sm font-normal ml-2">{{ data?.answer }}</div>
+      </div>
+
+    </div>
+    <div class="text-red-400 font-light text-sm h-0 " *ngIf="isWhatBringsYouValidator && whatBringsYou == undefined">*Please select a field</div>
+    <div class="flex space-x-3 mt-12 w-full">
+      <div class="flex items-center mr-auto">
+        <div class="w-7 h-2 bg-[#192339] rounded-xl mr-1"></div>
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+      </div>
+      <button class="px-8 py-2 bg-white border rounded-md inline-flex items-center justify-center"
+              (click)="skippedPersonalize()">
+        <span class="text-black font-base text-sm">Skip</span>
+      </button>
+      <button (click)="next(false, true, false, false,false,1)"
+              class="px-8 py-2 bg-[#5B61F3] rounded-md inline-flex items-center justify-center">
+        <span class="text-white font-base text-sm">Next</span>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="isPersonalize" class="modal bg-white px-16 py-14 rounded-md flex flex-col items-center">
+    <div class="flex mr-auto">
+      <img class="pr-2" src="assets/authicons/emoji.png" alt="emoji"/>
+      <div class="text-2xl font-bold text-[#192339]">
+        Let’s Personalize Your Experience!
+      </div>
+    </div>
+    <div class="text-black text-base pb-12 mr-auto pl-9 opacity-50 mt-2">
+      Who do you primarily work with?
+    </div>
+    <div class="flex space-x-5 mb-3">
+      <div *ngFor="let data of personalizeData[1]?.answers"
+           class="rounded flex flex-col items-center border  py-4 w-52 h-36 max-h-36 max-w-52"
+           [ngClass]="data?.id == personalize?'border-[#5B61F3]':'border-[#D9D9D9]'">
+        <div class="ml-auto pr-4">
+          <input [checked]="data?.id == personalize" [value]="data?.id" (change)="whatBringsYouEvent($event,2)"
+                 type="radio" class="kopist-radio" name="personalize"/>
+        </div>
+        <div>
+          <img class="pb-7" src="{{data?.image}}" alt="Work"/>
+        </div>
+        <div class="text-sm font-normal ml-2">{{ data?.answer }}</div>
+      </div>
+    </div>
+    <div class="text-red-400 font-light text-sm h-0 " *ngIf="isPersonalizeValidator && personalize == undefined">*Please select a field</div>
+    <div class="flex space-x-3 mt-12 w-full">
+      <div class="flex mr-auto items-center">
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+        <div class="w-7 h-2 bg-[#192339] rounded-xl mr-1"></div>
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+      </div>
+      <button (click)="next(true, false, false, false,false,0)"
+              class="px-8 py-2 bg-white border rounded-md inline-flex items-center justify-center">
+        <span class="text-black font-base text-sm">Go back</span>
+      </button>
+      <button (click)="next(false, false, true, false,false,2)"
+              class="px-8 py-2 bg-[#5B61F3] rounded-md inline-flex items-center justify-center">
+        <span class="text-white font-base text-sm">Next</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="modal bg-white px-16 py-14 rounded-md flex flex-col items-center" *ngIf="isYourTeamType">
+    <div class="flex">
+      <img class="pr-2" src="assets/authicons/emoji.png" alt="emoji"/>
+      <div class="text-2xl font-bold text-[#192339]">
+        Let’s Personalize Your Experience!
+      </div>
+    </div>
+    <div class="text-black text-base pb-12 mr-auto pl-9 opacity-50 mt-2">
+      Tell us your team type & company size?
+    </div>
+    <div class="flex flex-col mr-auto w-full mb-3">
+      <label class="text-sm font-normal mb-1 ml-2" for="team">What type of team are you on?</label>
+
+      <select [(ngModel)]="yourTeamType" class="focus:outline-none" name="teams" id="team">
+        <option *ngFor="let data of personalizeData[2]?.answers" [ngValue]="data?.id"
+                [selected]="data?.id == yourTeamType">{{data?.answer}}</option>
+
+      </select>
+      <label class="text-sm font-normal mb-1 mt-6 ml-2" for="size">And my company size is?</label>
+
+      <select [(ngModel)]="yourTeamSize" class="focus:outline-none" name="size" id="size">
+        <option *ngFor="let data of personalizeData[3]?.answers" [ngValue]="data?.id"
+                [selected]="data?.id == yourTeamSize">{{data?.answer}}</option>
+
+      </select>
+    </div>
+    <div class="text-red-400 font-light text-sm h-0 " *ngIf="isYourTeamTypeValidator && (yourTeamType == undefined || yourTeamSize == undefined)">*Please choose the options</div>
+    <div class="flex space-x-3 mt-12 w-full">
+      <div class="flex mr-auto items-center">
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+        <div class="w-7 h-2 bg-[#192339] rounded-xl mr-1"></div>
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+      </div>
+      <button (click)="next(false, true, false, false,false,0)"
+              class="px-8 py-2 bg-white border rounded-md inline-flex items-center justify-center">
+        <span class="text-black font-base text-sm">Go back</span>
+      </button>
+      <button (click)="next(false, false, false, true,false,3)"
+              class="px-8 py-2 bg-[#5B61F3] rounded-md inline-flex items-center justify-center">
+        <span class="text-white font-base text-sm">Next</span>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="isYourPlanModal" class="modal bg-white px-16 py-14 tall:py-8 rounded-md flex flex-col items-center plan-modal">
+    <div class="flex mr-auto">
+      <img class="pr-2" src="assets/personalize/rocket.png" alt="emoji"/>
+      <div class="text-2xl font-bold text-[#192339]">
+        How do you plan to use Kopist?
+      </div>
+    </div>
+    <div class="text-black text-base pb-12 mr-auto pl-9 opacity-50 mt-2">
+      Select from the below options
+    </div>
+    <div class="flex space-x-5 space-y-5 ques-container mb-3">
+      <div *ngFor="let data of personalizeData[4]?.answers"
+           class="ques-card rounded flex flex-col items-center border py-4 w-52 max-w-52"
+           [ngClass]="data?.id == yourPlanModal?'border-[#5B61F3]':'border-[#D9D9D9]'">
+        <div class="ml-auto pr-4"><input type="radio" name="plan" [checked]="data?.id == yourPlanModal"
+                                         [value]="data?.id" (change)="whatBringsYouEvent($event,4)" class="kopist-radio"
+                                         name="" id=""/></div>
+        <img class="pb-7" src="{{data?.image}}" alt="Onboard"/>
+        <div class="text-sm font-normal px-14 text-center">
+          {{ data?.answer }}
+        </div>
+      </div>
+
+    </div>
+    <div class="text-red-400 font-light text-sm h-0 " *ngIf="isYourPlanModalValidator && yourPlanModal == undefined">*Please select a field</div>
+    <div class="flex space-x-3 mt-12 tall:mt-6 w-full">
+      <div class="flex mr-auto items-center">
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+        <div class="w-7 h-2 bg-[#192339] rounded-xl mr-1"></div>
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+      </div>
+      <button (click)="next(false, false, true, false,false,0)"
+              class="px-8 py-2 bg-white border rounded-md inline-flex items-center justify-center">
+        <span class="text-black font-base text-sm">Go back</span>
+      </button>
+      <button (click)="next(false, false, false, false,true,4)"
+              class="px-8 py-2 bg-[#5B61F3] rounded-md inline-flex items-center justify-center">
+        <span class="text-white font-base text-sm">Next</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="modal bg-white px-16 py-14 rounded-md flex flex-col items-center" *ngIf="isTeamCreated">
+    <div class="flex">
+      <img class="pr-2" src="assets/authicons/emoji.png" alt="emoji"/>
+      <div class="text-2xl font-bold text-[#192339]">
+        What’s your team name?
+      </div>
+    </div>
+    <div class="text-black text-base pb-12 mr-auto pl-9 opacity-50 mt-2">
+      Tell us your team name
+    </div>
+    <div class="flex flex-col mr-auto w-full">
+      <input class="focus:outline-none mb-3" type="text" name="team-name" placeholder="Type here"
+             [(ngModel)]="team_name"/>
+    </div>
+    <div class="text-red-400 font-light text-sm h-0 " *ngIf="isTeamCreatedValidator && !team_name">*Please provide a team name</div>
+    <div class="flex space-x-3 mt-12 ml-auto w-full">
+      <div class="flex mr-auto items-center" *ngIf="!skipPersonalize">
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+        <div class="w-3 h-2 bg-[#E5EDF7] rounded-xl mr-1"></div>
+        <div class="w-7 h-2 bg-[#192339] rounded-xl mr-1"></div>
+      </div>
+      <button class="px-8 py-2 bg-white border rounded-md inline-flex items-center justify-center"
+              (click)="next(false, false, false, true,false,0)" *ngIf="!skipPersonalize">
+
+        <span class="text-black font-base text-sm">Go back</span>
+      </button>
+      <button (click)="createTeamName()"
+              class="px-8 py-2 bg-[#5B61F3] rounded-md inline-flex items-center justify-center ml-auto">
+        <span class="text-white font-base text-sm">Get Started</span>
+      </button>
+    </div>
+  </div>
+</div>

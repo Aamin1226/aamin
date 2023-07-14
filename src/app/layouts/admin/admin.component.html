@@ -1,0 +1,22 @@
+<app-personalise (valueChange)='displayCounter($event)' *ngIf="!defaultTeamAvailable"></app-personalise>
+<div *ngIf="loading"
+     class="loader-container fixed z-[9999999999999999] flex items-center justify-center min-h-screen min-w-full max-w-full">
+  <!-- <div class="w-12 h-12 rounded-full animate-spin
+  border-8 border-dashed border-[#5B61F3] border-t-transparent">
+  </div> -->
+  <img width="80" height="80" src="assets/animation_640_ljcmu2hh.gif" alt="Loading......">
+</div>
+<main class="min-h-screen w-full text-gray-700 bg-[#F6F8FF]" x-data="layout" *ngIf="defaultTeamAvailable">
+  <!-- header page -->
+  <app-navbar></app-navbar>
+
+  <div class="flex">
+    <!-- aside -->
+    <app-sidebar class="border-r-2 border-gray-200 bg-white" *ngIf="!isEditorRoute()"></app-sidebar>
+
+    <!-- main content page -->
+    <div class="w-full p-2 lg:pl-14 lg:pr-9 lg:py-4">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</main>

@@ -1,0 +1,14 @@
+.invite-modal {
+  background: none;
+  backdrop-filter: blur(5px);
+}
+
+.image-container:hover .image {
+  opacity: .2;
+}
+
+.invite-border {
+  height: 3px;
+  background: #5B61F3;
+  border-radius: 4px 4px 0px 0px;
+}

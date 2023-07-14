@@ -1,0 +1,35 @@
+<div class="modal-container invite-modal flex justify-center items-center fixed top-0 right-0 bottom-0 left-0">
+  <div class="modal bg-white  pb-14 pt-6 rounded-md flex flex-col items-center">
+    <div class="flex w-full ml-20 px-16" (click)="closeModal()">
+      <img class="ml-auto pb-5 cursor-pointer" src="assets/team/cross.svg" alt="close">
+    </div>
+    <div class="flex mr-auto px-16">
+      <div class="text-2xl font-bold text-[#192339]">
+        Change Role
+      </div>
+    </div>
+    <div class="text-black text-base mr-auto opacity-50 mt-4 px-16">
+      Select a role for {{memberDetails?.user}}
+    </div>
+    <div class="text-black text-base pb-5 mr-auto opacity-50 px-16">
+      ({{memberDetails?.email}})
+    </div>
+    <hr class="bg-[#e4e4e4] w-full ">
+    <div class="flex flex-col mr-auto w-[50%] mt-7 mb-7 border border-[#D9D9D9] rounded-md pr-3 mx-16">
+      <select [(ngModel)]="selectedRole" class=" px-4 h-10 text-sm focus:outline-none">
+        <option *ngFor="let role of roles" [ngValue]="role?.id">{{role.name}}</option>
+        <!-- <option value="Creator">Creator</option> -->
+      </select>
+    </div>
+
+    <div class="mr-auto w-[450px] min-w-[450px] max-w-[450px] mb-3 text-sm font-normal text-[#192339] px-16">
+      There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some
+      form, by injected humour, or randomised words which don't look even slightly believable.
+    </div>
+
+    <div class="flex space-x-3 mt-4 w-full px-16">
+      <button (click)="updateRole()"
+        class="px-6 py-2 bg-[#5B61F3] rounded-lg inline-flex items-center justify-center ml-auto">
+        <span class="text-white font-base text-sm">Update Role</span>
+      </button>
+    </div>

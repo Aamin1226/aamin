@@ -1,0 +1,36 @@
+<div class="modal-container invite-modal flex justify-center items-center absolute top-0 right-0 bottom-0 left-0">
+  <div class="modal bg-white px-16 pb-14 pt-6 rounded-md flex flex-col items-center">
+    <div class="flex w-full ml-20">
+      <img (click)="closeModal()" class="ml-auto pb-5 cursor-pointer" src="assets/team/cross.svg"
+        alt="close">
+    </div>
+    <div class="flex">
+      <img class="pr-2" src="assets/authicons/emoji.png" alt="emoji" />
+      <div class="text-2xl font-bold text-[#192339]">
+        Whats your team name?
+      </div>
+    </div>
+    <div class="text-black text-base pb-12 mr-auto pl-9 opacity-50 mt-2">
+      Tell us your team name.
+    </div>
+    <div [formGroup]="createTeamForm" class="flex flex-col mr-auto w-full mb-3">
+      <input placeholder="  Type here" formControlName="team_name" class="border border-[#D9D9D9] rounded-md h-10 pl-2"
+        type="text" name="" id="">
+      <div
+        class="error-text mt-0 items-center flex left-0 bottom-[-24px] w-full bg-[#FFEEEE] text-[#BE4B49] text-xs py-1 pl-4 border-t border-[#BE4B49]"
+        *ngIf="createTeamForm.controls['team_name'].hasError('required') && (createTeamForm.controls['team_name'].dirty || createTeamForm.controls['team_name'].touched)">
+        <img src="assets/authicons/error-icon.svg" alt="e">
+        <span class="text-[#BE4B49] text-xs ml-2">This field is required
+        </span>
+      </div>
+    </div>
+    <div class="flex space-x-3 mt-4 w-full">
+
+
+      <button (click)="createTeam()" [disabled]="createTeamForm.invalid"
+        class="px-6 py-2 bg-[#5B61F3] rounded-lg inline-flex items-center justify-center ml-auto">
+        <span class="text-white font-medium text-sm">Create Team</span>
+      </button>
+    </div>
+  </div>
+</div>

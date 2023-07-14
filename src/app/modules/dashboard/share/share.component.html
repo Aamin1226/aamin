@@ -1,0 +1,150 @@
+<div class="modal-container invite-modal flex justify-center items-center fixed top-0 right-0 bottom-0 left-0">
+  <div class="modal bg-white px-16 pb-6 pt-6 rounded-md flex flex-col items-center">
+    <div class="flex w-[125%] mb-3 relative mr-0 border-b">
+      <div (click)="pendingTab = !pendingTab" class="flex-col text-sm font-medium cursor-pointer ml-16">
+        <div [ngClass]="!pendingTab ? 'text-[#5B61F3]' : 'text-[#9196A2]'" class="px-1">
+          People
+        </div>
+        <div *ngIf="!pendingTab" class="invite-border mt-2"></div>
+      </div>
+      <div (click)="pendingTab = !pendingTab" class="text-sm font-medium ml-11 cursor-pointer">
+        <div [ngClass]="pendingTab ? 'text-[#5B61F3]' : 'text-[#9196A2]'" class="px-1">
+          Export
+        </div>
+        <div *ngIf="pendingTab" class="invite-border mt-2"></div>
+      </div>
+      <img (click)="closeModal()" alt="close" class="ml-auto mr-5 pb-4 cursor-pointer"
+           src="assets/team/cross.svg"/>
+    </div>
+
+    <div *ngIf="!pendingTab" class="w-full">
+      <div class="flex flex-col mt-7 mr-auto w-full mb-3 relative">
+        <div class="w-full flex flex-col items-center mx-auto">
+          <div class="w-full">
+            <div class="flex flex-col items-center relative">
+              <label class="text-sm font-normal mr-auto mb-1 ml-2 text-[#192339]">Emails</label>
+              <div [formGroup]="shareByEmailForm" class="w-[500px] min-w-[500px] max-w-[500px] flex items-center">
+                <div class="py-1 px-4 flex border border-[#D9D9D9] bg-white rounded w-[70%]">
+                  <div class="flex flex-auto flex-wrap">
+                    <div class="flex-1">
+                      <input class="text-sm bg-transparent p-1 px-2 appearance-none outline-none h-full text-gray-800 w-full" formControlName="email"
+                             placeholder="Add Email"/>
+                    </div>
+                  </div>
+                  <div class="text-gray-300 w-auto flex items-center">
+                    <div class="flex bottom-3 right-4 items-center cursor-pointer"   appClickOutside [appClickOutside]="'roleMenu'"
+                         (clickOutside)="closeMenu()">
+                      <div (click)="roleDropdown = !roleDropdown" class="text-xs font-normal text-[#192339] opacity-50">
+                        {{ selectedRole?.name }}
+                      </div>
+                      <div class="ml-2 relative">
+                        <img (click)="roleDropdown = !roleDropdown" alt="arrow"
+                             src="assets/team/invite_arrow.svg"/>
+
+                          <ul  id="roleMenu" #roleMenu *ngIf="roleDropdown"
+                            class="absolute py-2 px-4 bg-white rounded opacity-100 z-10 right-0 top-4 border border-[#D9D9D9]">
+                            <li (click)="closeMenu();selectRole(role)" *ngFor="let role of roles"
+                                class="text-xs font-normal text-[#192339] opacity-50 mb-2">
+                              {{ role.name }}
+                            </li>
+                          </ul>
+
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                <div
+                  *ngIf="
+                  shareByEmailForm.controls['email'].hasError('pattern') &&
+                  (shareByEmailForm.controls['email'].dirty ||
+                    shareByEmailForm.controls['email'].touched)
+                "
+                  class="absolute w-[70%] error-text items-center flex left-0 bottom-[-24px] bg-[#FFEEEE] text-[#BE4B49] text-xs py-1 pl-4 border-t border-[#BE4B49]">
+                  <img alt="e" src="assets/authicons/error-icon.svg"/>
+                  <span class="text-[#BE4B49] text-xs ml-2">Please enter valid email address
+                  </span>
+                </div>
+                <button (click)="shareByEmail()"
+                        class="px-4 py-2.5 bg-[#5B61F3] rounded-md inline-flex items-center justify-center ml-auto w-[25%]">
+                  <span class="text-white font-base text-sm">Send Invites</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-7 max-h-52 ml-2">
+        <perfect-scrollbar>
+          <div class="w-full  flex-col max-h-52">
+
+            <div *ngFor="let data of usersList;let i = index" class="flex w-full mb-7 items-center">
+              <div
+                class="w-8 h-8 bg-[#F0FCFF] text-xs text-[#428EA1] rounded-full flex justify-center items-center uppercase">
+                {{data?.users?.first_name ? (data?.users?.first_name[0] + data?.users?.last_name[0]):data?.email[0]}}</div>
+              <div class="ml-4 text-sm font-normal text-[#192339] capitalize">{{data?.users?.first_name ? (data?.users?.first_name + ' '+ data?.users?.last_name):data?.email}}
+                </div>
+              <div class="text-gray-300 w-auto flex items-center ml-auto">
+                <div class="flex bottom-3 right-4 items-center cursor-pointer" appClickOutside [appClickOutside]="'userMenu'"
+                     (clickOutside)="closeUserMenu()">
+                  <div (click)="userRoleDropdown = !userRoleDropdown;userIndex=i"
+                       class="text-xs font-normal text-[#192339] opacity-50">{{getUserRole(data?.role_id)}}</div>
+                  <div class="ml-2 relative">
+                    <img (click)="userRoleDropdown = !userRoleDropdown;userIndex=i" alt="arrow"
+                         src="assets/team/invite_arrow.svg">
+                      <ul id="userMenu" #userMenu *ngIf="userRoleDropdown&&userIndex==i"
+                        class=" absolute  py-2 px-4 bg-white rounded opacity-100 z-10 right-0 top-4 border border-[#D9D9D9]">
+                        <li (click)="closeUserMenu();changeUserRole(role,data)" *ngFor="let role of roles"
+                            class="text-xs font-normal text-[#192339] opacity-50 mb-2">
+                          {{role?.name}}
+                        </li>
+                      </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </perfect-scrollbar>
+      </div>
+
+
+    </div>
+
+    <div *ngIf="pendingTab" class="w-full mt-8">
+      <div class="w-[500px] min-w-[500px] max-w-[500px]">
+        <div class="pl-2 flex">
+          <div class="flex items-center">
+            <img alt="share" src="assets/dashboardicons/pdf-share.png"/>
+            <div class="text-sm text-[#192339] font-normal ml-2">
+              Export as PDF
+            </div>
+          </div>
+          <button (click)="exportPdf()"
+                  class="px-8 py-2 bg-white rounded-md inline-flex items-center justify-center ml-auto border">
+            <span class="text-[#727272] font-medium text-sm">Export</span>
+          </button>
+        </div>
+        <div class="pl-2 flex mt-2">
+          <div class="flex items-center">
+            <img alt="share" src="assets/dashboardicons/export-html.svg"/>
+            <div class="text-sm text-[#192339] font-normal ml-2">
+              Export as HTML
+            </div>
+          </div>
+          <button (click)="exportHTML()"
+                  class="px-8 py-2 bg-white rounded-md inline-flex items-center justify-center ml-auto border">
+            <span class="text-[#727272] font-medium text-sm">Export</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-7 px-16 border-t w-[125%]">
+      <div class="pt-5 flex items-center cursor-pointer w-fit" (click)="copyLink()">
+        <img alt="copy" src="assets/dashboardicons/copy-link.png"/>
+        <div class="ml-2 text-[#008EFF] text-sm font-normal">Copy Link</div>
+      </div>
+    </div>
+  </div>
+</div>

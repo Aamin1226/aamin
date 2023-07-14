@@ -1,0 +1,30 @@
+<div class="modal-container invite-modal flex justify-center items-center fixed top-0 right-0 bottom-0 left-0">
+  <div class="modal bg-white px-16 pb-11 pt-6 rounded-md flex flex-col items-center">
+    <div class="flex w-full ml-20">
+      <img (click)="closeModal()" class="ml-auto pb-5 cursor-pointer" src="assets/team/cross.svg"
+        alt="close">
+    </div>
+    <div class="flex mr-auto">
+      <img class="pr-2" src="assets/authicons/emoji.png" alt="emoji" />
+      <div class="text-2xl font-bold text-[#192339] capitalize">
+        Select a tab to get started.
+      </div>
+    </div>
+    <div class="text-black text-base pb-12 mr-auto pl-9 opacity-50 mt-2">
+      Kopist will open the tab and start capturing steps automatically.
+    </div>
+    <perfect-scrollbar>
+      <div class="w-[500px] max-w-[500px] max-h-[350px]">
+
+        <div
+          class="rounded-lg border border-[#D9D9D9] hover:bg-[#F0F1FF] flex py-4 px-5 w-full mb-4 cursor-pointer justify-start items-start"
+          *ngFor="let data of allTabs;let i = index" (click)="redirectToTab(data.id,data.windowId,data.url)">
+          <div class="w-6 h-6 mr-2">
+            <img src="{{data?.favicon}}" alt="">
+          </div>
+          <div class="text-[#192339] font-normal text-base text-ellipsis overflow-hidden">{{data?.title}}</div>
+        </div>
+      </div>
+    </perfect-scrollbar>
+  </div>
+</div>

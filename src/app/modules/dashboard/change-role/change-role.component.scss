@@ -1,0 +1,11 @@
+.invite-modal{
+    background: none;
+    backdrop-filter: blur(5px);
+}
+
+select {
+    -webkit-appearance: none; /* Safari and Chrome */
+    -moz-appearance: none; /* Firefox */
+    appearance: none;
+    background: url('../../../../assets/team/select-arrow.svg') no-repeat right center; 
+  }
